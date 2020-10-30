@@ -1,0 +1,20 @@
+struct has_loop {
+	text string
+	next *has_loop
+}
+
+def p(msg string) void {
+	print_string_length(msg, strlen(msg))
+}
+
+def main() int {
+	let a = newstruct has_loop{}
+	let b = newstruct has_loop{}
+
+	a.text = 'hello'
+	b.text = 'world'
+	a.next = &b
+
+	p((*a.next).text)
+	0
+}
