@@ -6,4 +6,8 @@ export class Overload {
 	get value(): LangFunction[] {
 		return this._value
 	}
+
+	addCandidate(func: LangFunction): void {
+		this._value.push(func)
+	}
 }

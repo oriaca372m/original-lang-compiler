@@ -1,10 +1,10 @@
 import { TypeCore } from 'Src/ast/langtype'
-import { LangFunction } from 'Src/ast/langfunction'
 import { Variable } from 'Src/ast/variable'
+import { Overload } from 'Src/ast/compile-time'
 
 export type NameValueType =
 	| { kind: 'type'; value: TypeCore }
-	| { kind: 'function'; value: LangFunction }
+	| { kind: 'overload'; value: Overload }
 	| { kind: 'variable'; value: Variable }
 
 export class Name {

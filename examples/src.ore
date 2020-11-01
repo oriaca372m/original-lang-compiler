@@ -1,20 +1,19 @@
-struct has_loop {
-	text string
-	next *has_loop
-}
-
 def p(msg string) void {
 	print_string_length(msg, strlen(msg))
 }
 
+def p(num int) void {
+	print(num)
+}
+
+def p(ptr *int) void {
+	print(*ptr)
+}
+
 def main() int {
-	let a = newstruct has_loop{}
-	let b = newstruct has_loop{}
-
-	a.text = 'hello'
-	b.text = 'world'
-	a.next = &b
-
-	p((*a.next).text)
+	let v = 500
+	p('gochiusa')
+	p(1)
+	p(&v)
 	0
 }

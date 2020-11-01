@@ -1,9 +1,10 @@
 import * as p from 'Src/parser'
 
-import { ValueType, voidType, rValue, lValue } from 'Src/ast/langtype'
+import { ValueType, voidType, intType, stringType, rValue, lValue } from 'Src/ast/langtype'
 import { Variable } from 'Src/ast/variable'
 import { Name } from 'Src/ast/name'
 import { builtInFunctions } from 'Src/ast/builtin'
+import { BuiltInFunction } from 'Src/ast/langfunction'
 
 import * as prim from 'Src/ast/nodes/primitive'
 import { BlockState } from 'Src/ast/nodes/define-function'
@@ -27,13 +28,22 @@ export function makeExprFromVariable(s: BlockState, v: p.Variable): Expr {
 			return new Expr(new Ctv(new Overload([func])))
 		}
 
+		if (name === 'overload_test') {
+			const overload = new Overload([
+				new BuiltInFunction('print', [intType], voidType),
+				new BuiltInFunction('print_string_length', [stringType, intType], voidType),
+			])
+
+			return new Expr(new Ctv(overload))
+		}
+
 		throw `名前が見つからない: ${name}`
 	}
 
 	if (nameValue.kind === 'variable') {
 		return new Expr(new VariableRef(nameValue.value))
-	} else if (nameValue.kind === 'function') {
-		return new Expr(new Ctv(new Overload([nameValue.value])))
+	} else if (nameValue.kind === 'overload') {
+		return new Expr(new Ctv(nameValue.value))
 	}
 
 	throw `変数じゃないなにかを参照してる: ${name}`

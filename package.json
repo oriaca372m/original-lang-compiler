@@ -24,7 +24,9 @@
   },
   "dependencies": {
     "@types/lodash": "^4.14.162",
+    "@types/uuid": "^8.3.0",
     "linked-list": "^2.1.0",
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.20",
+    "uuid": "^8.3.1"
   }
 }
