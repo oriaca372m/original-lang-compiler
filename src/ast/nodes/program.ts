@@ -48,12 +48,22 @@ export function makeProgram(program: p.Program): Program {
 	for (const defFunction of program.defFunctions.value) {
 		const langFunction = readFunctionDecl(s.nameResolver, defFunction)
 		langFunctionMap.set(defFunction, langFunction)
-		s.nameResolver.set(
-			new Name(defFunction.name.value, {
-				kind: 'overload',
-				value: new Overload([langFunction]),
-			})
-		)
+		const findingName = defFunction.name.value
+		const name = s.nameResolver.resolveCurrent(findingName)
+		if (name === undefined) {
+			s.nameResolver.set(
+				new Name(findingName, {
+					kind: 'overload',
+					value: new Overload([langFunction]),
+				})
+			)
+		} else {
+			if (name.value.kind !== 'overload') {
+				throw `関数以外で使われている名前: ${findingName}`
+			}
+
+			name.value.value.addCandidate(langFunction)
+		}
 	}
 
 	for (const [defFunction, langFunction] of langFunctionMap) {
