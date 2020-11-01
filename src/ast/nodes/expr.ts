@@ -11,7 +11,7 @@ import { VariableRef, LetStmt, makeExprFromVariable, makeLetStmt } from 'Src/ast
 import { ApplyFunction, makeExprFromInterpretedOperand } from 'Src/ast/nodes/apply-function'
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { Return, ConvertToRValue } from 'Src/ast/nodes/misc'
-import { CompileTimeValue } from 'Src/ast/nodes/compile-time-value'
+import { Ctv } from 'Src/ast/compile-time'
 
 import * as u from 'Src/utils'
 
@@ -29,7 +29,7 @@ type ExprType =
 	| ApplyApplicative
 	| NewStruct
 	| MemberAccess
-	| CompileTimeValue
+	| Ctv
 export class Expr extends prim.TypedValueNode<ExprType> {}
 
 function makeExprFromTerm(s: BlockState, term: p.Term): Expr {

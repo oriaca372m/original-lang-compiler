@@ -14,7 +14,7 @@ import { toRValue } from 'Src/ast/nodes/misc'
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { ImmediateValue } from 'Src/ast/nodes/immediate-value'
 import { makeMemberAccess } from 'Src/ast/nodes/struct'
-import { CompileTimeValue, convertCtvToExpr } from 'Src/ast/nodes/compile-time-value'
+import { Ctv, convertCtvToExpr } from 'Src/ast/compile-time'
 
 import * as u from 'Src/utils'
 
@@ -69,7 +69,7 @@ export function makeApplyFunctionFormFunctionCall(
 	argsNode: p.FunctionCallArgument
 ): ApplyFunction {
 	let funcExpr = makeExprFromInterpretedOperand(s, funcNode)
-	if (funcExpr.value instanceof CompileTimeValue) {
+	if (funcExpr.value instanceof Ctv) {
 		funcExpr = convertCtvToExpr(funcExpr.value)
 	}
 
