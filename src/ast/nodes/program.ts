@@ -4,6 +4,7 @@ import { Name, NameResolver } from 'Src/ast/name'
 import { LangStructManager } from 'Src/ast/langstruct'
 import { StructType } from 'Src/ast/langtype'
 import { LangFunction } from 'Src/ast/langfunction'
+import { Overload } from 'Src/ast/compile-time'
 
 import { DefineFunction, readFunctionDecl, makeDefineFunction } from 'Src/ast/nodes/define-function'
 import { makeLangStruct } from 'Src/ast/nodes/struct'
@@ -48,7 +49,10 @@ export function makeProgram(program: p.Program): Program {
 		const langFunction = readFunctionDecl(s.nameResolver, defFunction)
 		langFunctionMap.set(defFunction, langFunction)
 		s.nameResolver.set(
-			new Name(defFunction.name.value, { kind: 'function', value: langFunction })
+			new Name(defFunction.name.value, {
+				kind: 'overload',
+				value: new Overload([langFunction]),
+			})
 		)
 	}
 

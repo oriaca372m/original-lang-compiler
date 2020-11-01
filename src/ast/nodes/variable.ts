@@ -42,8 +42,8 @@ export function makeExprFromVariable(s: BlockState, v: p.Variable): Expr {
 
 	if (nameValue.kind === 'variable') {
 		return new Expr(new VariableRef(nameValue.value))
-	} else if (nameValue.kind === 'function') {
-		return new Expr(new Ctv(new Overload([nameValue.value])))
+	} else if (nameValue.kind === 'overload') {
+		return new Expr(new Ctv(nameValue.value))
 	}
 
 	throw `変数じゃないなにかを参照してる: ${name}`
