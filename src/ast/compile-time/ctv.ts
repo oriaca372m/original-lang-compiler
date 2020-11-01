@@ -1,9 +1,7 @@
 import * as prim from 'Src/ast/nodes/primitive'
-
 import { ValueType } from 'Src/ast/langtype'
-import { LangFunction } from 'Src/ast/langfunction'
 
-export type Overload = LangFunction[]
+import { Overload } from 'Src/ast/compile-time/overload'
 
 type CtvType = Overload
 

@@ -9,7 +9,7 @@ import * as prim from 'Src/ast/nodes/primitive'
 import { BlockState } from 'Src/ast/nodes/define-function'
 import { Expr, makeExprFormExpr } from 'Src/ast/nodes/expr'
 import { toRValue } from 'Src/ast/nodes/misc'
-import { Ctv } from 'Src/ast/compile-time'
+import { Ctv, Overload } from 'Src/ast/compile-time'
 
 export class VariableRef extends prim.ValueNode<Variable> implements prim.TypedNode {
 	get type(): ValueType {
@@ -24,7 +24,7 @@ export function makeExprFromVariable(s: BlockState, v: p.Variable): Expr {
 	if (nameValue === undefined) {
 		const func = builtInFunctions[name]
 		if (func !== undefined) {
-			return new Expr(new Ctv([func]))
+			return new Expr(new Ctv(new Overload([func])))
 		}
 
 		throw `名前が見つからない: ${name}`
@@ -33,7 +33,7 @@ export function makeExprFromVariable(s: BlockState, v: p.Variable): Expr {
 	if (nameValue.kind === 'variable') {
 		return new Expr(new VariableRef(nameValue.value))
 	} else if (nameValue.kind === 'function') {
-		return new Expr(new Ctv([nameValue.value]))
+		return new Expr(new Ctv(new Overload([nameValue.value])))
 	}
 
 	throw `変数じゃないなにかを参照してる: ${name}`
