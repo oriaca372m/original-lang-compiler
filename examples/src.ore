@@ -10,7 +10,12 @@ def p(ptr *int) void {
 	print(*ptr)
 }
 
+def take_void(msg string, v void) void {
+	p(msg)
+}
+
 def main() int {
+	take_void('outer', while 1 { take_void('inner', break) })
 	let v = 500
 	p('gochiusa')
 	p(1)

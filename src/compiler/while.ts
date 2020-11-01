@@ -14,6 +14,7 @@ export function compileWhile(a: Asm, s: FunctionState, whileNode: ast.While): vo
 	s.whileTable.set(whileNode, { endLabel: whileEnd })
 
 	a.defLabel(whileStart)
+	a.push(r.r15)
 	a.mov(r.rsp, r.r15)
 
 	compileExpr(a, s, whileNode.cond)
@@ -30,8 +31,9 @@ export function compileWhile(a: Asm, s: FunctionState, whileNode: ast.While): vo
 
 	a.nl()
 	a.c('whileの終わり')
-	a.mov(r.r15, r.rsp)
 	a.defLabel(whileEnd)
+	a.mov(r.r15, r.rsp)
+	a.pop(r.r15)
 	pushVoidValue(a)
 }
 
