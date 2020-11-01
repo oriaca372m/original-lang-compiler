@@ -16,5 +16,9 @@ def main() int {
 	a.next = &b
 
 	p((*a.next).text)
+
+	let text = 'gochiusa'
+	overload_test(text, strlen(text))
+	overload_test(1)
 	0
 }
