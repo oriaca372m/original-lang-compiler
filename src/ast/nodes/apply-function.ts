@@ -14,7 +14,8 @@ import { toRValue } from 'Src/ast/nodes/misc'
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { ImmediateValue } from 'Src/ast/nodes/immediate-value'
 import { makeMemberAccess } from 'Src/ast/nodes/struct'
-import { Ctv } from 'Src/ast/compile-time'
+import { Ctv, Overload } from 'Src/ast/compile-time'
+import { resolveOverload } from 'Src/ast/overload-resolver'
 
 import * as u from 'Src/utils'
 
@@ -69,13 +70,22 @@ export function makeApplyFunctionFormFunctionCall(
 	argsNode: p.FunctionCallArgument
 ): ApplyFunction {
 	let funcExpr = makeExprFromInterpretedOperand(s, funcNode)
+	const args = argsNode.args.value.map((x) => makeExprFormExpr(s, x))
+
 	if (funcExpr.value instanceof Ctv) {
-		funcExpr = funcExpr.value.toExpr()
+		const overload = funcExpr.value.value
+		if (overload instanceof Overload) {
+			funcExpr = new Expr(new ImmediateValue(resolveOverload(overload.value, args)))
+		} else {
+			throw '関数じゃない'
+		}
+	} else {
+		funcExpr = toRValue(funcExpr)
 	}
 
 	return new ApplyFunction(
-		toRValue(funcExpr),
-		argsNode.args.value.map((x) => toRValue(makeExprFormExpr(s, x)))
+		funcExpr,
+		args.map((x) => toRValue(x))
 	)
 }
 
