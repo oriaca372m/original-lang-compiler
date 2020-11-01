@@ -1,5 +1,5 @@
 import * as p from 'Src/parser'
-import * as u from 'Src/utils'
+import { v4 as uuidv4 } from 'uuid'
 
 import { LangFunction, NormalFunction } from 'Src/ast/langfunction'
 import { Variable } from 'Src/ast/variable'
@@ -120,19 +120,14 @@ export class DefineFunction {
 export function readFunctionDecl(nameResolver: NameResolver, def: p.DefFunction): LangFunction {
 	const types = def.params.value.map((x) => resolveType(nameResolver, x.type))
 	const resultType = resolveType(nameResolver, def.resultType)
-	return new NormalFunction(def.name.value, types, resultType)
+	return new NormalFunction(`${def.name.value}__${uuidv4()}`, types, resultType)
 }
 
-export function makeDefineFunction(s: ProgramState, def: p.DefFunction): DefineFunction {
-	const name = s.nameResolver.resolve(def.name.value)
-	const nameValue = name?.value
-
-	if (nameValue?.kind !== 'function') {
-		u.unreachable()
-	}
-
-	const langFunction = nameValue.value
-
+export function makeDefineFunction(
+	s: ProgramState,
+	def: p.DefFunction,
+	langFunction: LangFunction
+): DefineFunction {
 	const dfs = new DefineFunctionState(s, langFunction)
 
 	const params = def.params.value.map((x, i) => {

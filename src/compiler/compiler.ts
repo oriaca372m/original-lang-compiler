@@ -186,7 +186,7 @@ function calcVariableOffset(s: FunctionState, df: ast.DefineFunction): void {
 function compileDefineFunction(a: Asm, s: ProgramState, df: ast.DefineFunction): void {
 	const funcInfo = s.langFunctionTable.get(df.langFunction) ?? u.unreachable()
 
-	if (df.langFunction.name === 'main') {
+	if (df.name === 'main') {
 		a.exportLabel(funcInfo.label)
 	}
 
@@ -223,7 +223,8 @@ function compileDefineFunction(a: Asm, s: ProgramState, df: ast.DefineFunction):
 	compileMultipleExpr(a, fs, df.body)
 }
 
-function createLangFunctionInfo(s: AsmState, lf: ast.LangFunction): LangFunctionInfo {
+function createLangFunctionInfo(s: AsmState, df: ast.DefineFunction): LangFunctionInfo {
+	const lf = df.langFunction
 	const params = []
 
 	let offset = 0
@@ -233,7 +234,7 @@ function createLangFunctionInfo(s: AsmState, lf: ast.LangFunction): LangFunction
 	}
 
 	let label
-	if (lf.name === 'main') {
+	if (df.name === 'main') {
 		label = new Label('_main')
 	} else {
 		label = s.labelManager.getLabel()
@@ -251,7 +252,7 @@ export function compileProgram(a: Asm, program: ast.Program): void {
 
 	for (const defineFunction of program.defineFunctions) {
 		const func = defineFunction.langFunction
-		const v = createLangFunctionInfo(a.s, func)
+		const v = createLangFunctionInfo(a.s, defineFunction)
 		s.langFunctionTable.set(func, v)
 	}
 

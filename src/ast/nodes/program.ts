@@ -3,6 +3,7 @@ import * as p from 'Src/parser'
 import { Name, NameResolver } from 'Src/ast/name'
 import { LangStructManager } from 'Src/ast/langstruct'
 import { StructType } from 'Src/ast/langtype'
+import { LangFunction } from 'Src/ast/langfunction'
 
 import { DefineFunction, readFunctionDecl, makeDefineFunction } from 'Src/ast/nodes/define-function'
 import { makeLangStruct } from 'Src/ast/nodes/struct'
@@ -41,13 +42,18 @@ export function makeProgram(program: p.Program): Program {
 		s.langStructManager.set(type.name, langStruct)
 	}
 
-	for (const defFunction of program.defFunctions.value) {
-		const langFunction = readFunctionDecl(s.nameResolver, defFunction)
-		s.nameResolver.set(new Name(langFunction.name, { kind: 'function', value: langFunction }))
-	}
+	const langFunctionMap = new Map<p.DefFunction, LangFunction>()
 
 	for (const defFunction of program.defFunctions.value) {
-		defineFunctions.push(makeDefineFunction(s, defFunction))
+		const langFunction = readFunctionDecl(s.nameResolver, defFunction)
+		langFunctionMap.set(defFunction, langFunction)
+		s.nameResolver.set(
+			new Name(defFunction.name.value, { kind: 'function', value: langFunction })
+		)
+	}
+
+	for (const [defFunction, langFunction] of langFunctionMap) {
+		defineFunctions.push(makeDefineFunction(s, defFunction, langFunction))
 	}
 
 	return new Program(defineFunctions)
