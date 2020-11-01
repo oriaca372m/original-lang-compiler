@@ -112,6 +112,8 @@ export function compileExpr(a: Asm, s: FunctionState, expr: ast.Expr): void {
 			a.add(imm(d.member.offset), r.rsi)
 			a.push(r.rsi)
 		}
+	} else if (d instanceof ast.CompileTimeValue) {
+		u.assert(false, 'compilerにCompileTimeValueが来てはいけない')
 	} else {
 		u.unreachable(d)
 	}
