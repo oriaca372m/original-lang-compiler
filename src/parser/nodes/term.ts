@@ -10,8 +10,12 @@ import { Cast, parseCast } from 'Src/parser/nodes/cast'
 
 export class Bracket extends prim.ValueNode<Expr> {}
 
-function parseBracket(s: Source): Bracket {
-	s.forceSeek('(')
+function parseBracket(s: Source): Bracket | ParseError {
+	const err = s.trySeek('(')
+	if (prim.isError(err)) {
+		return err
+	}
+
 	s.skipSpaces()
 	const expr = parseExpr(s)
 	s.skipSpaces()
@@ -23,7 +27,7 @@ function parseBracket(s: Source): Bracket {
 type TermType =
 	| prim.NumberNode
 	| prim.StringNode
-	| prim.Variable
+	| prim.Identifier
 	| Bracket
 	| If
 	| While
@@ -36,56 +40,19 @@ export class Term extends prim.ValueNode<TermType> {
 	_className_Term: undefined
 }
 
-export function parseTerm(s: Source): Term {
-	const ifNode = prim.tryParse(s, parseIf)
-	if (ifNode !== undefined) {
-		return new Term(ifNode)
-	}
+export function parseTerm(s: Source): Term | ParseError {
+	const v = prim.getFirst(s, [
+		(s) => prim.map(parseIf(s), (x) => new Term(x)),
+		(s) => prim.map(parseWhile(s), (x) => new Term(x)),
+		(s) => prim.map(parseBreak(s), (x) => new Term(x)),
+		(s) => prim.map(parseNewStruct(s), (x) => new Term(x)),
+		(s) => prim.map(parseCast(s), (x) => new Term(x)),
+		(s) => prim.map(parseArrayLiteral(s), (x) => new Term(x)),
+		(s) => prim.map(prim.parseNumber(s), (x) => new Term(x)),
+		(s) => prim.map(prim.parseString(s), (x) => new Term(x)),
+		(s) => prim.map(prim.parseIdentifier(s), (x) => new Term(x)),
+		(s) => prim.map(parseBracket(s), (x) => new Term(x)),
+	])
 
-	const whileNode = prim.tryParse(s, parseWhile)
-	if (whileNode !== undefined) {
-		return new Term(whileNode)
-	}
-
-	const breakNode = prim.tryParse(s, parseBreak)
-	if (breakNode !== undefined) {
-		return new Term(breakNode)
-	}
-
-	const newStructNode = prim.tryParse(s, parseNewStruct)
-	if (newStructNode !== undefined) {
-		return new Term(newStructNode)
-	}
-
-	const cast = prim.tryParse(s, parseCast)
-	if (cast !== undefined) {
-		return new Term(cast)
-	}
-
-	const arrayLiteral = prim.tryParse(s, parseArrayLiteral)
-	if (arrayLiteral !== undefined) {
-		return new Term(arrayLiteral)
-	}
-
-	const number = prim.tryParse(s, prim.parseNumber)
-	if (number !== undefined) {
-		return new Term(number)
-	}
-
-	const str = prim.tryParse(s, prim.parseString)
-	if (str !== undefined) {
-		return new Term(str)
-	}
-
-	const variable = prim.tryParse(s, prim.parseVariable)
-	if (variable !== undefined) {
-		return new Term(variable)
-	}
-
-	const bracket = prim.tryParse(s, parseBracket)
-	if (bracket !== undefined) {
-		return new Term(bracket)
-	}
-
-	throw new ParseError(s, "couldn't find a term")
+	return v ?? new ParseError(s, "couldn't find a term")
 }

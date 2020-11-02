@@ -1,10 +1,11 @@
 import { Source } from 'Src/parser/source'
+import { ParseError } from 'Src/parser/error'
 import * as prim from 'Src/parser/nodes/primitive'
 
 export class TypeIdentifier extends prim.Identifier {}
 
 function parseTypeIdentifier(s: Source): TypeIdentifier {
-	return new TypeIdentifier(s.getToken(/[a-z_]/))
+	return new TypeIdentifier(prim.force(s.tryToken(/[a-z_]/)))
 }
 
 export class FixedArrayType {
@@ -19,9 +20,13 @@ export class FixedArrayType {
 	}
 }
 
-function parseFixedArrayType(s: Source): FixedArrayType {
-	s.forceSeek('[')
-	const len = prim.parseNumber(s)
+function parseFixedArrayType(s: Source): FixedArrayType | ParseError {
+	const err = s.trySeek('[')
+	if (prim.isError(err)) {
+		return err
+	}
+
+	const len = prim.force(prim.parseNumber(s))
 	s.forceSeek(']')
 	const elmType = parseTypeNode(s)
 
@@ -36,8 +41,11 @@ export class PointerType {
 	}
 }
 
-function parsePointerType(s: Source): PointerType {
-	s.forceSeek('*')
+function parsePointerType(s: Source): PointerType | ParseError {
+	const err = s.trySeek('*')
+	if (prim.isError(err)) {
+		return err
+	}
 	const elmType = parseTypeNode(s)
 
 	return new PointerType(elmType)
@@ -47,15 +55,10 @@ type TypeNodeType = TypeIdentifier | FixedArrayType | PointerType
 export class TypeNode extends prim.ValueNode<TypeNodeType> {}
 
 export function parseTypeNode(s: Source): TypeNode {
-	const arr = prim.tryParse(s, parseFixedArrayType)
-	if (arr !== undefined) {
-		return new TypeNode(arr)
-	}
+	const v = prim.getFirst(s, [
+		(s) => prim.map(parseFixedArrayType(s), (x) => new TypeNode(x)),
+		(s) => prim.map(parsePointerType(s), (x) => new TypeNode(x)),
+	])
 
-	const ptr = prim.tryParse(s, parsePointerType)
-	if (ptr !== undefined) {
-		return new TypeNode(ptr)
-	}
-
-	return new TypeNode(parseTypeIdentifier(s))
+	return v ?? new TypeNode(parseTypeIdentifier(s))
 }

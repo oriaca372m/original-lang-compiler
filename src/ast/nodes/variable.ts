@@ -18,7 +18,7 @@ export class VariableRef extends prim.ValueNode<Variable> implements prim.TypedN
 	}
 }
 
-export function makeExprFromVariable(s: BlockState, v: p.Variable): Expr {
+export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): Expr {
 	const name = v.value
 	const nameValue = s.nameResolver.resolve(v.value)?.value
 

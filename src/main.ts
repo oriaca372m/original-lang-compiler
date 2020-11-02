@@ -24,10 +24,10 @@ function main() {
 		throw e
 	}
 
-	console.error(util.inspect(program, { depth: null, colors: true }))
+	console.log(util.inspect(program, { depth: null, colors: true }))
 
 	const ast = makeProgram(program)
-	console.error(util.inspect(ast, { depth: null, colors: true }))
+	console.log(util.inspect(ast, { depth: null, colors: true }))
 
 	const a = new Asm()
 	compileProgram(a, ast)
