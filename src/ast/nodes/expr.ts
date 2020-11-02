@@ -51,6 +51,8 @@ function makeExprFromTerm(s: BlockState, term: p.Term): Expr {
 		return new Expr(makeArrayLiteral(s, v))
 	} else if (v instanceof p.NewStruct) {
 		return new Expr(makeNewStruct(s, v))
+	} else if (v instanceof p.Cast) {
+		u.notImplemented()
 	} else {
 		u.unreachable(v)
 	}

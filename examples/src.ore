@@ -15,6 +15,7 @@ def take_void(msg string, v void) void {
 }
 
 def main() int {
+	p(cast<int>(5 + 5))
 	take_void('outer', while 1 { take_void('inner', break) })
 	let v = 500
 	p('gochiusa')
