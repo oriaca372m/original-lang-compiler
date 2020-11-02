@@ -10,8 +10,12 @@ import { Cast, parseCast } from 'Src/parser/nodes/cast'
 
 export class Bracket extends prim.ValueNode<Expr> {}
 
-function parseBracket(s: Source): Bracket {
-	s.forceSeek('(')
+function parseBracket(s: Source): Bracket | ParseError {
+	const err = s.trySeek('(')
+	if (prim.isError(err)) {
+		return err
+	}
+
 	s.skipSpaces()
 	const expr = parseExpr(s)
 	s.skipSpaces()
@@ -36,56 +40,56 @@ export class Term extends prim.ValueNode<TermType> {
 	_className_Term: undefined
 }
 
-export function parseTerm(s: Source): Term {
+export function parseTerm(s: Source): Term | ParseError {
 	const ifNode = prim.tryParse(s, parseIf)
-	if (ifNode !== undefined) {
+	if (prim.isNotError(ifNode)) {
 		return new Term(ifNode)
 	}
 
 	const whileNode = prim.tryParse(s, parseWhile)
-	if (whileNode !== undefined) {
+	if (prim.isNotError(whileNode)) {
 		return new Term(whileNode)
 	}
 
 	const breakNode = prim.tryParse(s, parseBreak)
-	if (breakNode !== undefined) {
+	if (prim.isNotError(breakNode)) {
 		return new Term(breakNode)
 	}
 
 	const newStructNode = prim.tryParse(s, parseNewStruct)
-	if (newStructNode !== undefined) {
+	if (prim.isNotError(newStructNode)) {
 		return new Term(newStructNode)
 	}
 
 	const cast = prim.tryParse(s, parseCast)
-	if (cast !== undefined) {
+	if (prim.isNotError(cast)) {
 		return new Term(cast)
 	}
 
 	const arrayLiteral = prim.tryParse(s, parseArrayLiteral)
-	if (arrayLiteral !== undefined) {
+	if (prim.isNotError(arrayLiteral)) {
 		return new Term(arrayLiteral)
 	}
 
 	const number = prim.tryParse(s, prim.parseNumber)
-	if (number !== undefined) {
+	if (prim.isNotError(number)) {
 		return new Term(number)
 	}
 
 	const str = prim.tryParse(s, prim.parseString)
-	if (str !== undefined) {
+	if (prim.isNotError(str)) {
 		return new Term(str)
 	}
 
 	const variable = prim.tryParse(s, prim.parseVariable)
-	if (variable !== undefined) {
+	if (prim.isNotError(variable)) {
 		return new Term(variable)
 	}
 
 	const bracket = prim.tryParse(s, parseBracket)
-	if (bracket !== undefined) {
+	if (prim.isNotError(bracket)) {
 		return new Term(bracket)
 	}
 
-	throw new ParseError(s, "couldn't find a term")
+	return new ParseError(s, "couldn't find a term")
 }

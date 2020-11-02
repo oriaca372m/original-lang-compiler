@@ -13,8 +13,12 @@ export class FunctionCallArgument {
 	}
 }
 
-function parseFunctionCallArgument(s: Source): FunctionCallArgument {
-	s.forceSeek('(')
+function parseFunctionCallArgument(s: Source): FunctionCallArgument | ParseError {
+	const err = s.trySeek('(')
+	if (prim.isError(err)) {
+		return err
+	}
+
 	let first = true
 
 	const list = []
@@ -40,9 +44,8 @@ function parseFunctionCallArgument(s: Source): FunctionCallArgument {
 
 export class Operator extends prim.Identifier {}
 
-function parseOperator(s: Source): Operator {
-	const op = s.getToken(/[-+*/=<@&]/)
-	return new Operator(op)
+function parseOperator(s: Source): Operator | ParseError {
+	return prim.map(s.tryToken(/[-+*/=<@&]/), (x) => new Operator(x))
 }
 
 type OperandType = Term
@@ -51,9 +54,8 @@ export class Operand extends prim.ValueNode<OperandType> {
 	_className_Operand: undefined
 }
 
-function parseOperand(s: Source): Operand {
-	const term = parseTerm(s)
-	return new Operand(term)
+function parseOperand(s: Source): Operand | ParseError {
+	return prim.map(parseTerm(s), (x) => new Operand(x))
 }
 
 type SuffixType = FunctionCallArgument | IndexAccess | MemberAccess
@@ -67,23 +69,23 @@ export class Suffix extends prim.ValueNode<SuffixType> {
 	}
 }
 
-function parseSuffix(s: Source): Suffix {
+function parseSuffix(s: Source): Suffix | ParseError {
 	const indexAccess = prim.tryParse(s, parseIndexAccess)
-	if (indexAccess !== undefined) {
+	if (prim.isNotError(indexAccess)) {
 		return new Suffix('IndexAccess', indexAccess)
 	}
 
 	const memberAccess = prim.tryParse(s, parseMemberAccess)
-	if (memberAccess !== undefined) {
+	if (prim.isNotError(memberAccess)) {
 		return new Suffix('MemberAccess', memberAccess)
 	}
 
 	const funcArgs = prim.tryParse(s, parseFunctionCallArgument)
-	if (funcArgs !== undefined) {
+	if (prim.isNotError(funcArgs)) {
 		return new Suffix('FunctionCallArgument', funcArgs)
 	}
 
-	throw 'suffixではない'
+	return new ParseError(s, 'suffixではない')
 }
 
 export type ExprType = Operand | Operator | Suffix
@@ -94,7 +96,7 @@ export function parseExpr(s: Source): Expr {
 	for (;;) {
 		for (;;) {
 			const op = prim.tryParse(s, parseOperator)
-			if (op === undefined) {
+			if (prim.isError(op)) {
 				break
 			}
 
@@ -103,7 +105,7 @@ export function parseExpr(s: Source): Expr {
 		}
 
 		const operand = prim.tryParse(s, parseOperand)
-		if (operand === undefined) {
+		if (prim.isError(operand)) {
 			break
 		}
 		result.push(operand)
@@ -111,7 +113,7 @@ export function parseExpr(s: Source): Expr {
 
 		for (;;) {
 			const suffix = prim.tryParse(s, parseSuffix)
-			if (suffix === undefined) {
+			if (prim.isError(suffix)) {
 				break
 			}
 

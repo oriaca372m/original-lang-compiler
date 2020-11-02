@@ -69,6 +69,13 @@ export class Source {
 		return true
 	}
 
+	forceSeek(ch: string): void {
+		const err = this.trySeek(ch)
+		if (err !== true) {
+			throw err
+		}
+	}
+
 	tryWord(str: string): true | ParseError {
 		for (const ch of str) {
 			const err = this.trySeek(ch)

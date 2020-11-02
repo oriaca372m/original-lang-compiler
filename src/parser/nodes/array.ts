@@ -1,11 +1,15 @@
 import { Source } from 'Src/parser/source'
+import { ParseError } from 'Src/parser/error'
 import * as prim from 'Src/parser/nodes/primitive'
 import { Expr, parseExpr } from 'Src/parser/nodes/expr'
 
 export class ArrayLiteral extends prim.ListNode<Expr> {}
 
-export function parseArrayLiteral(s: Source): ArrayLiteral {
-	s.forceSeek('[')
+export function parseArrayLiteral(s: Source): ArrayLiteral | ParseError {
+	const err = s.trySeek('[')
+	if (prim.isError(err)) {
+		return err
+	}
 
 	let first = true
 
@@ -32,8 +36,12 @@ export function parseArrayLiteral(s: Source): ArrayLiteral {
 
 export class IndexAccess extends prim.ValueNode<Expr> {}
 
-export function parseIndexAccess(s: Source): IndexAccess {
-	s.forceSeek('[')
+export function parseIndexAccess(s: Source): IndexAccess | ParseError {
+	const err = s.trySeek('[')
+	if (prim.isError(err)) {
+		return err
+	}
+
 	s.skipSpaces()
 	const expr = parseExpr(s)
 	s.skipSpaces()

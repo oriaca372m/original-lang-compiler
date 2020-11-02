@@ -15,10 +15,14 @@ export class LetStmt {
 	}
 }
 
-function parseLetStmt(s: Source): LetStmt {
-	s.forceWord('let')
+function parseLetStmt(s: Source): LetStmt | ParseError {
+	const err = s.tryWord('let')
+	if (prim.isError(err)) {
+		return err
+	}
+
 	s.skipSpaces()
-	const id = prim.parseIdentifier(s)
+	const id = prim.force(prim.parseIdentifier(s))
 	s.skipSpaces()
 	s.forceSeek('=')
 	s.skipSpaces()
@@ -32,12 +36,12 @@ export class Stmt extends prim.ValueNode<StmtType> {}
 
 export function parseStmt(s: Source): Stmt {
 	const letStmt = prim.tryParse(s, parseLetStmt)
-	if (letStmt !== undefined) {
+	if (prim.isNotError(letStmt)) {
 		return new Stmt(letStmt)
 	}
 
 	const expr = prim.tryParse(s, parseExpr)
-	if (expr !== undefined) {
+	if (prim.isNotError(expr)) {
 		return new Stmt(expr)
 	}
 
@@ -46,8 +50,11 @@ export function parseStmt(s: Source): Stmt {
 
 export class MultipleStmt extends prim.ListNode<Stmt> {}
 
-export function parseMultipleStmt(s: Source): MultipleStmt {
-	s.forceSeek('{')
+export function parseMultipleStmt(s: Source): MultipleStmt | ParseError {
+	const err = s.trySeek('{')
+	if (prim.isError(err)) {
+		return err
+	}
 	s.skipRegExp(/[\n\t ]/)
 
 	const stmts: Stmt[] = []

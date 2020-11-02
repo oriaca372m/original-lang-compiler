@@ -1,4 +1,5 @@
 import { Source } from 'Src/parser/source'
+import { ParseError } from 'Src/parser/error'
 import * as prim from 'Src/parser/nodes/primitive'
 import { MultipleStmt, parseMultipleStmt } from 'Src/parser/nodes/stmt'
 import { Expr, parseExpr } from 'Src/parser/nodes/expr'
@@ -23,21 +24,27 @@ export class If {
 	}
 }
 
-export function parseIf(s: Source): If {
-	s.forceWord('if')
+export function parseIf(s: Source): If | ParseError {
+	const err = s.tryWord('if')
+	if (prim.isError(err)) {
+		return err
+	}
 	s.skipSpaces()
 
 	const cond = parseExpr(s)
 	s.skipSpaces()
 
-	const body = parseMultipleStmt(s)
+	const body = prim.force(parseMultipleStmt(s))
 	s.skipSpaces()
 
 	const elseBody = prim.tryParse(s, (s) => {
-		s.forceWord('else')
+		const err = s.tryWord('else')
+		if (prim.isError(err)) {
+			return err
+		}
 		s.skipSpaces()
 		return parseMultipleStmt(s)
 	})
 
-	return new If(cond, body, elseBody)
+	return new If(cond, body, prim.isError(elseBody) ? undefined : elseBody)
 }

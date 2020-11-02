@@ -1,4 +1,5 @@
 import { Source } from 'Src/parser/source'
+import { ParseError } from 'Src/parser/error'
 import * as prim from 'Src/parser/nodes/primitive'
 import { MultipleStmt, parseMultipleStmt } from 'Src/parser/nodes/stmt'
 import { TypeNode, parseTypeNode } from 'Src/parser/nodes/type'
@@ -15,10 +16,14 @@ export class FunctionParam {
 	}
 }
 
-function parseFunctionParams(s: Source): prim.ListNode<FunctionParam> {
+function parseFunctionParams(s: Source): prim.ListNode<FunctionParam> | ParseError {
 	const params = []
 
-	s.forceSeek('(')
+	const err = s.trySeek('(')
+	if (prim.isError(err)) {
+		return err
+	}
+
 	let first = true
 
 	for (;;) {
@@ -35,7 +40,7 @@ function parseFunctionParams(s: Source): prim.ListNode<FunctionParam> {
 			s.skipSpaces()
 		}
 
-		const name = prim.parseIdentifier(s)
+		const name = prim.force(prim.parseIdentifier(s))
 		s.skipSpaces()
 		const type = parseTypeNode(s)
 		params.push(new FunctionParam(name, type))
@@ -69,20 +74,23 @@ export class DefFunction {
 	}
 }
 
-export function parseDefFunction(s: Source): DefFunction {
-	s.forceWord('def')
+export function parseDefFunction(s: Source): DefFunction | ParseError {
+	const err = s.tryWord('def')
+	if (prim.isError(err)) {
+		return err
+	}
 	s.skipSpaces()
 
-	const id = prim.parseIdentifier(s)
+	const id = prim.force(prim.parseIdentifier(s))
 	s.skipSpaces()
 
-	const params = parseFunctionParams(s)
+	const params = prim.force(parseFunctionParams(s))
 	s.skipSpaces()
 
 	const resultType = parseTypeNode(s)
 	s.skipSpaces()
 
-	const body = parseMultipleStmt(s)
+	const body = prim.force(parseMultipleStmt(s))
 
 	return new DefFunction(id, params, body, resultType)
 }

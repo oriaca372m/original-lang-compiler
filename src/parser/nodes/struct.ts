@@ -1,4 +1,5 @@
 import { Source } from 'Src/parser/source'
+import { ParseError } from 'Src/parser/error'
 import * as prim from 'Src/parser/nodes/primitive'
 
 import { TypeNode, parseTypeNode } from 'Src/parser/nodes/type'
@@ -16,7 +17,7 @@ export class StructMember {
 }
 
 function parseStructMember(s: Source): StructMember {
-	const name = prim.parseIdentifier(s)
+	const name = prim.force(prim.parseIdentifier(s))
 	s.skipSpaces()
 	const type = parseTypeNode(s)
 	return new StructMember(name, type)
@@ -37,11 +38,14 @@ export class DefineStruct {
 	}
 }
 
-export function parseDefineStruct(s: Source): DefineStruct {
-	s.forceWord('struct')
+export function parseDefineStruct(s: Source): DefineStruct | ParseError {
+	const err = s.tryWord('struct')
+	if (prim.isError(err)) {
+		return err
+	}
 	s.skipSpaces()
 
-	const name = prim.parseIdentifier(s)
+	const name = prim.force(prim.parseIdentifier(s))
 	s.skipSpaces()
 
 	s.forceSeek('{')
@@ -77,8 +81,11 @@ export class NewStruct {
 	}
 }
 
-export function parseNewStruct(s: Source): NewStruct {
-	s.forceWord('newstruct')
+export function parseNewStruct(s: Source): NewStruct | ParseError {
+	const err = s.tryWord('newstruct')
+	if (prim.isError(err)) {
+		return err
+	}
 	s.skipSpaces()
 	const typeNode = parseTypeNode(s)
 	s.skipSpaces()
@@ -91,8 +98,12 @@ export function parseNewStruct(s: Source): NewStruct {
 
 export class MemberAccess extends prim.ValueNode<prim.Identifier> {}
 
-export function parseMemberAccess(s: Source): MemberAccess {
-	s.forceSeek('.')
-	const id = prim.parseIdentifier(s)
+export function parseMemberAccess(s: Source): MemberAccess | ParseError {
+	const err = s.trySeek('.')
+	if (prim.isError(err)) {
+		return err
+	}
+
+	const id = prim.force(prim.parseIdentifier(s))
 	return new MemberAccess(id)
 }
