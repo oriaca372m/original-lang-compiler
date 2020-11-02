@@ -10,6 +10,7 @@ export {
 	FunctionType,
 } from 'Src/ast/langtype'
 export { LangFunction } from 'Src/ast/langfunction'
+export { Ctv } from 'Src/ast/compile-time'
 
 export { Program, makeProgram } from 'Src/ast/nodes/program'
 export { DefineFunction } from 'Src/ast/nodes/define-function'
@@ -23,4 +24,4 @@ export { MultipleExpr, Return, ConvertToRValue } from 'Src/ast/nodes/misc'
 export { ApplyFunction } from 'Src/ast/nodes/apply-function'
 export { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 export { NewStruct, MemberAccess } from 'Src/ast/nodes/struct'
-export { Ctv } from 'Src/ast/compile-time'
+export { Cast } from 'Src/ast/nodes/cast'

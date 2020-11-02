@@ -1,5 +1,7 @@
 import * as p from 'Src/parser'
 
+import { Ctv } from 'Src/ast/compile-time'
+
 import * as prim from 'Src/ast/nodes/primitive'
 import { BlockState } from 'Src/ast/nodes/define-function'
 import { ImmediateValue, makeImmdiateValue } from 'Src/ast/nodes/immediate-value'
@@ -11,7 +13,7 @@ import { VariableRef, LetStmt, makeExprFromVariable, makeLetStmt } from 'Src/ast
 import { ApplyFunction, makeExprFromInterpretedOperand } from 'Src/ast/nodes/apply-function'
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { Return, ConvertToRValue } from 'Src/ast/nodes/misc'
-import { Ctv } from 'Src/ast/compile-time'
+import { Cast, makeCast } from 'Src/ast/nodes/cast'
 
 import * as u from 'Src/utils'
 
@@ -29,6 +31,7 @@ type ExprType =
 	| ApplyApplicative
 	| NewStruct
 	| MemberAccess
+	| Cast
 	| Ctv
 export class Expr extends prim.TypedValueNode<ExprType> {}
 
@@ -52,7 +55,7 @@ function makeExprFromTerm(s: BlockState, term: p.Term): Expr {
 	} else if (v instanceof p.NewStruct) {
 		return new Expr(makeNewStruct(s, v))
 	} else if (v instanceof p.Cast) {
-		u.notImplemented()
+		return new Expr(makeCast(s, v))
 	} else {
 		u.unreachable(v)
 	}
