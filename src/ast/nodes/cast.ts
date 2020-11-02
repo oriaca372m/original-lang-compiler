@@ -14,6 +14,11 @@ export class Cast implements prim.TypedNode {
 			throw 'castの式はrvalueで!'
 		}
 
+		// 同じ型なら許可
+		if (_toType.equals(_expr.type.core)) {
+			return
+		}
+
 		// intからpointerへの変換は許可
 		if (_expr.type.core.equals(intType) && _toType instanceof PointerType) {
 			return
@@ -24,9 +29,12 @@ export class Cast implements prim.TypedNode {
 			return
 		}
 
-		if (!_toType.equals(_expr.type.core)) {
-			throw 'サポートしていない変換!'
+		// pointerからpointerへの変換は許可
+		if (_expr.type.core instanceof PointerType && _toType instanceof PointerType) {
+			return
 		}
+
+		throw 'サポートしていない変換!'
 	}
 
 	get expr(): Expr {
