@@ -15,11 +15,14 @@ def take_void(msg string, v void) void {
 }
 
 def main() int {
-	p(cast<int>(5 + 5))
-	take_void('outer', while 1 { take_void('inner', break) })
-	let v = 500
-	p('gochiusa')
-	p(1)
-	p(&v)
+	let arr = [1, 2, 3]
+	let ptr = &arr[0]
+	p(*ptr)
+
+	let addr = cast<int>(ptr)
+	p(addr)
+
+	let ptr_two = cast<*int>(addr + 8)
+	p(*ptr_two)
 	0
 }
