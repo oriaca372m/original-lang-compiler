@@ -70,22 +70,13 @@ export class Suffix extends prim.ValueNode<SuffixType> {
 }
 
 function parseSuffix(s: Source): Suffix | ParseError {
-	const indexAccess = parseIndexAccess(s)
-	if (prim.isNotError(indexAccess)) {
-		return new Suffix('IndexAccess', indexAccess)
-	}
+	const v = prim.getFirst(s, [
+		(s) => prim.map(parseIndexAccess(s), (x) => new Suffix('IndexAccess', x)),
+		(s) => prim.map(parseMemberAccess(s), (x) => new Suffix('MemberAccess', x)),
+		(s) => prim.map(parseFunctionCallArgument(s), (x) => new Suffix('FunctionCallArgument', x)),
+	])
 
-	const memberAccess = parseMemberAccess(s)
-	if (prim.isNotError(memberAccess)) {
-		return new Suffix('MemberAccess', memberAccess)
-	}
-
-	const funcArgs = parseFunctionCallArgument(s)
-	if (prim.isNotError(funcArgs)) {
-		return new Suffix('FunctionCallArgument', funcArgs)
-	}
-
-	return new ParseError(s, 'suffixではない')
+	return v ?? new ParseError(s, 'suffixではない')
 }
 
 export type ExprType = Operand | Operator | Suffix

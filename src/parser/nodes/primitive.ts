@@ -35,6 +35,15 @@ export function force<T>(value: T | ParseError): T {
 	return value
 }
 
+export function getFirst<T>(s: Source, parsers: ((s: Source) => T | ParseError)[]): T | undefined {
+	for (const parser of parsers) {
+		const val = parser(s)
+		if (isNotError(val)) {
+			return val
+		}
+	}
+}
+
 export abstract class ValueNode<T> {
 	constructor(private readonly _value: T) {}
 
