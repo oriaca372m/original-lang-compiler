@@ -9,6 +9,7 @@ export { While, Break } from 'Src/parser/nodes/while'
 export { DefFunction } from 'Src/parser/nodes/define-function'
 export { DefineStruct, StructMember, NewStruct, MemberAccess } from 'Src/parser/nodes/struct'
 export { ArrayLiteral, IndexAccess } from 'Src/parser/nodes/array'
+export { Cast } from 'Src/parser/nodes/cast'
 export { Program, parseProgram } from 'Src/parser/nodes/program'
 export { ParseError } from 'Src/parser/error'
 export {

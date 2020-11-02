@@ -6,6 +6,7 @@ import { While, parseWhile, Break, parseBreak } from 'Src/parser/nodes/while'
 import { ArrayLiteral, parseArrayLiteral } from 'Src/parser/nodes/array'
 import { Expr, parseExpr } from 'Src/parser/nodes/expr'
 import { NewStruct, parseNewStruct } from 'Src/parser/nodes/struct'
+import { Cast, parseCast } from 'Src/parser/nodes/cast'
 
 export class Bracket extends prim.ValueNode<Expr> {}
 
@@ -29,6 +30,7 @@ type TermType =
 	| Break
 	| ArrayLiteral
 	| NewStruct
+	| Cast
 export class Term extends prim.ValueNode<TermType> {
 	// TODO: どうもTypeScriptの型チェックがガバガバなののワークアラウンド
 	_className_Term: undefined
@@ -53,6 +55,11 @@ export function parseTerm(s: Source): Term {
 	const newStructNode = prim.tryParse(s, parseNewStruct)
 	if (newStructNode !== undefined) {
 		return new Term(newStructNode)
+	}
+
+	const cast = prim.tryParse(s, parseCast)
+	if (cast !== undefined) {
+		return new Term(cast)
 	}
 
 	const arrayLiteral = prim.tryParse(s, parseArrayLiteral)
