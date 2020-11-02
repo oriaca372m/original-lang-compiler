@@ -37,14 +37,14 @@ export function parseIf(s: Source): If | ParseError {
 	const body = prim.force(parseMultipleStmt(s))
 	s.skipSpaces()
 
-	const elseBody = prim.tryParse(s, (s) => {
+	let elseBody: MultipleStmt | undefined = undefined
+	{
 		const err = s.tryWord('else')
-		if (prim.isError(err)) {
-			return err
+		if (prim.isNotError(err)) {
+			s.skipSpaces()
+			elseBody = prim.force(parseMultipleStmt(s))
 		}
-		s.skipSpaces()
-		return parseMultipleStmt(s)
-	})
+	}
 
-	return new If(cond, body, prim.isError(elseBody) ? undefined : elseBody)
+	return new If(cond, body, elseBody)
 }

@@ -77,10 +77,13 @@ export class Source {
 	}
 
 	tryWord(str: string): true | ParseError {
+		const start = this.clone()
+
 		for (const ch of str) {
 			const err = this.trySeek(ch)
 			if (err !== true) {
-				return err
+				this.update(start)
+				return new ParseError(this, `expect '${str}' but it is not found.`)
 			}
 		}
 

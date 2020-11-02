@@ -35,17 +35,13 @@ type StmtType = Expr | LetStmt
 export class Stmt extends prim.ValueNode<StmtType> {}
 
 export function parseStmt(s: Source): Stmt {
-	const letStmt = prim.tryParse(s, parseLetStmt)
+	const letStmt = parseLetStmt(s)
 	if (prim.isNotError(letStmt)) {
 		return new Stmt(letStmt)
 	}
 
-	const expr = prim.tryParse(s, parseExpr)
-	if (prim.isNotError(expr)) {
-		return new Stmt(expr)
-	}
-
-	throw new ParseError(s, "couldn't find a statement.")
+	const expr = parseExpr(s)
+	return new Stmt(expr)
 }
 
 export class MultipleStmt extends prim.ListNode<Stmt> {}

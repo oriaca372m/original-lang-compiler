@@ -35,15 +35,6 @@ export function force<T>(value: T | ParseError): T {
 	return value
 }
 
-export function tryParse<T>(s: Source, parser: (s: Source) => T | ParseError): T | ParseError {
-	const s2 = s.clone()
-	const v = parser(s2)
-	if (isNotError(v)) {
-		s.update(s2)
-	}
-	return v
-}
-
 export abstract class ValueNode<T> {
 	constructor(private readonly _value: T) {}
 

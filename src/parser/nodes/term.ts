@@ -41,52 +41,52 @@ export class Term extends prim.ValueNode<TermType> {
 }
 
 export function parseTerm(s: Source): Term | ParseError {
-	const ifNode = prim.tryParse(s, parseIf)
+	const ifNode = parseIf(s)
 	if (prim.isNotError(ifNode)) {
 		return new Term(ifNode)
 	}
 
-	const whileNode = prim.tryParse(s, parseWhile)
+	const whileNode = parseWhile(s)
 	if (prim.isNotError(whileNode)) {
 		return new Term(whileNode)
 	}
 
-	const breakNode = prim.tryParse(s, parseBreak)
+	const breakNode = parseBreak(s)
 	if (prim.isNotError(breakNode)) {
 		return new Term(breakNode)
 	}
 
-	const newStructNode = prim.tryParse(s, parseNewStruct)
+	const newStructNode = parseNewStruct(s)
 	if (prim.isNotError(newStructNode)) {
 		return new Term(newStructNode)
 	}
 
-	const cast = prim.tryParse(s, parseCast)
+	const cast = parseCast(s)
 	if (prim.isNotError(cast)) {
 		return new Term(cast)
 	}
 
-	const arrayLiteral = prim.tryParse(s, parseArrayLiteral)
+	const arrayLiteral = parseArrayLiteral(s)
 	if (prim.isNotError(arrayLiteral)) {
 		return new Term(arrayLiteral)
 	}
 
-	const number = prim.tryParse(s, prim.parseNumber)
+	const number = prim.parseNumber(s)
 	if (prim.isNotError(number)) {
 		return new Term(number)
 	}
 
-	const str = prim.tryParse(s, prim.parseString)
+	const str = prim.parseString(s)
 	if (prim.isNotError(str)) {
 		return new Term(str)
 	}
 
-	const variable = prim.tryParse(s, prim.parseVariable)
+	const variable = prim.parseVariable(s)
 	if (prim.isNotError(variable)) {
 		return new Term(variable)
 	}
 
-	const bracket = prim.tryParse(s, parseBracket)
+	const bracket = parseBracket(s)
 	if (prim.isNotError(bracket)) {
 		return new Term(bracket)
 	}

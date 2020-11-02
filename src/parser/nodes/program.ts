@@ -26,13 +26,13 @@ export function parseProgram(s: Source): Program {
 
 	for (;;) {
 		;(() => {
-			const dfunc = prim.tryParse(s, parseDefFunction)
+			const dfunc = parseDefFunction(s)
 			if (prim.isNotError(dfunc)) {
 				defFunctions.push(dfunc)
 				return
 			}
 
-			const dstruct = prim.tryParse(s, parseDefineStruct)
+			const dstruct = parseDefineStruct(s)
 			if (prim.isNotError(dstruct)) {
 				defineStructs.push(dstruct)
 				return

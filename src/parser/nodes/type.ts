@@ -55,12 +55,12 @@ type TypeNodeType = TypeIdentifier | FixedArrayType | PointerType
 export class TypeNode extends prim.ValueNode<TypeNodeType> {}
 
 export function parseTypeNode(s: Source): TypeNode {
-	const arr = prim.tryParse(s, parseFixedArrayType)
+	const arr = parseFixedArrayType(s)
 	if (prim.isNotError(arr)) {
 		return new TypeNode(arr)
 	}
 
-	const ptr = prim.tryParse(s, parsePointerType)
+	const ptr = parsePointerType(s)
 	if (prim.isNotError(ptr)) {
 		return new TypeNode(ptr)
 	}
