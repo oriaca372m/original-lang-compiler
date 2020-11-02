@@ -27,7 +27,7 @@ function parseBracket(s: Source): Bracket | ParseError {
 type TermType =
 	| prim.NumberNode
 	| prim.StringNode
-	| prim.Variable
+	| prim.Identifier
 	| Bracket
 	| If
 	| While
@@ -50,7 +50,7 @@ export function parseTerm(s: Source): Term | ParseError {
 		(s) => prim.map(parseArrayLiteral(s), (x) => new Term(x)),
 		(s) => prim.map(prim.parseNumber(s), (x) => new Term(x)),
 		(s) => prim.map(prim.parseString(s), (x) => new Term(x)),
-		(s) => prim.map(prim.parseVariable(s), (x) => new Term(x)),
+		(s) => prim.map(prim.parseIdentifier(s), (x) => new Term(x)),
 		(s) => prim.map(parseBracket(s), (x) => new Term(x)),
 	])
 

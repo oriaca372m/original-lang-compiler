@@ -9,7 +9,7 @@ import { If, makeIf } from 'Src/ast/nodes/if'
 import { While, makeWhile, Break, makeBreak } from 'Src/ast/nodes/while'
 import { ArrayLiteral, makeArrayLiteral } from 'Src/ast/nodes/array'
 import { makeNewStruct, NewStruct, MemberAccess } from 'Src/ast/nodes/struct'
-import { VariableRef, LetStmt, makeExprFromVariable, makeLetStmt } from 'Src/ast/nodes/variable'
+import { VariableRef, LetStmt, makeExprFromIdentifier, makeLetStmt } from 'Src/ast/nodes/variable'
 import { ApplyFunction, makeExprFromInterpretedOperand } from 'Src/ast/nodes/apply-function'
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { Return, ConvertToRValue } from 'Src/ast/nodes/misc'
@@ -42,8 +42,8 @@ function makeExprFromTerm(s: BlockState, term: p.Term): Expr {
 		return new Expr(makeImmdiateValue(v))
 	} else if (v instanceof p.Bracket) {
 		return makeExprFormExpr(s, v.value)
-	} else if (v instanceof p.Variable) {
-		return makeExprFromVariable(s, v)
+	} else if (v instanceof p.Identifier) {
+		return makeExprFromIdentifier(s, v)
 	} else if (v instanceof p.If) {
 		return new Expr(makeIf(s, v))
 	} else if (v instanceof p.While) {

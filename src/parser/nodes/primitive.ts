@@ -66,18 +66,6 @@ export function parseIdentifier(s: Source): Identifier | ParseError {
 	return map(s.tryToken(/[a-z_]/), (x) => new Identifier(x))
 }
 
-export class Variable extends Identifier {}
-
-export function parseVariable(s: Source): Variable | ParseError {
-	return map(s.tryToken(/[a-z_]/), (x) => new Variable(x))
-}
-
-export class TypeIdentifier extends Identifier {}
-
-export function parseTypeIdentifier(s: Source): TypeIdentifier | ParseError {
-	return map(s.tryToken(/[a-z_]/), (x) => new TypeIdentifier(x))
-}
-
 export class NumberNode {
 	constructor(private readonly _value: number) {}
 

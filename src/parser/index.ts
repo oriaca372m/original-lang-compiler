@@ -1,5 +1,5 @@
 export { Source } from 'Src/parser/source'
-export { Identifier, NumberNode, StringNode, Variable } from 'Src/parser/nodes/primitive'
+export { Identifier, NumberNode, StringNode } from 'Src/parser/nodes/primitive'
 export { TypeNode, TypeIdentifier, FixedArrayType, PointerType } from 'Src/parser/nodes/type'
 export { Stmt, LetStmt, MultipleStmt } from 'Src/parser/nodes/stmt'
 export { FunctionCallArgument, Operator, Operand, Expr, Suffix } from 'Src/parser/nodes/expr'
