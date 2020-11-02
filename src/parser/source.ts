@@ -12,21 +12,26 @@ export class Source {
 		return this._idx
 	}
 
-	get cchOrUndefined(): string | undefined {
-		return this._source[this._idx]
+	get tryCch(): string | ParseError {
+		const ch = this._source[this._idx]
+		if (ch === undefined) {
+			return new ParseError(this, 'unexpected EOF.')
+		}
+
+		return ch
 	}
 
 	// current character
 	get cch(): string {
-		const ch = this.cchOrUndefined
-		if (ch === undefined) {
-			throw new ParseError(this, 'unexpected EOF.')
+		const ch = this.tryCch
+		if (ch instanceof ParseError) {
+			throw ch
 		}
 		return ch
 	}
 
 	get isEof(): boolean {
-		return this.cchOrUndefined === undefined
+		return this._source[this._idx] === undefined
 	}
 
 	next(): void {
@@ -55,28 +60,34 @@ export class Source {
 		this.skipRegExp(/[\t ]/)
 	}
 
-	forceSeek(ch: string): void {
+	trySeek(ch: string): true | ParseError {
 		const inCh = this.cch
 		if (inCh !== ch) {
-			throw new ParseError(this, `expect '${ch}' but '${inCh}'.`)
+			return new ParseError(this, `expect '${ch}' but '${inCh}'.`)
 		}
 		this._idx++
+		return true
 	}
 
-	forceWord(str: string): void {
+	tryWord(str: string): true | ParseError {
 		for (const ch of str) {
-			this.forceSeek(ch)
+			const err = this.trySeek(ch)
+			if (err !== true) {
+				return err
+			}
 		}
+
+		return true
 	}
 
 	// 連続して正規表現がマッチする文字列を返す
 	// 空ならエラー
-	getToken(regexp: RegExp): string {
+	tryToken(regexp: RegExp): string | ParseError {
 		let str = ''
 
 		for (;;) {
-			const ch = this.cchOrUndefined
-			if (ch === undefined || !regexp.test(ch)) {
+			const ch = this.tryCch
+			if (ch instanceof ParseError || !regexp.test(ch)) {
 				break
 			}
 			str += ch
@@ -84,7 +95,7 @@ export class Source {
 		}
 
 		if (str === '') {
-			throw new ParseError(this, 'got a empty token.')
+			return new ParseError(this, 'got a empty token.')
 		}
 
 		return str

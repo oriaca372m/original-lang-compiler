@@ -1,4 +1,39 @@
 import { Source } from 'Src/parser/source'
+import { ParseError } from 'Src/parser/error'
+
+export function isError<T>(value: T | ParseError): value is ParseError {
+	return value instanceof ParseError
+}
+
+export function isNotError<T>(
+	value: T | ParseError,
+	func: ((v: T) => void) | undefined = undefined
+): value is T {
+	if (!(value instanceof ParseError)) {
+		if (func) {
+			func(value)
+		}
+		return true
+	}
+
+	return false
+}
+
+export function map<T, U>(value: T | ParseError, map: (v: T) => U | ParseError): U | ParseError {
+	if (value instanceof ParseError) {
+		return value
+	}
+
+	return map(value)
+}
+
+export function force<T>(value: T | ParseError): T {
+	if (value instanceof ParseError) {
+		throw value
+	}
+
+	return value
+}
 
 export abstract class ValueNode<T> {
 	constructor(private readonly _value: T) {}
@@ -18,20 +53,20 @@ export class Identifier {
 	}
 }
 
-export function parseIdentifier(s: Source): Identifier {
-	return new Identifier(s.getToken(/[a-z_]/))
+export function parseIdentifier(s: Source): Identifier | ParseError {
+	return map(s.tryToken(/[a-z_]/), (x) => new Identifier(x))
 }
 
 export class Variable extends Identifier {}
 
-export function parseVariable(s: Source): Variable {
-	return new Variable(s.getToken(/[a-z_]/))
+export function parseVariable(s: Source): Variable | ParseError {
+	return map(s.tryToken(/[a-z_]/), (x) => new Variable(x))
 }
 
 export class TypeIdentifier extends Identifier {}
 
-export function parseTypeIdentifier(s: Source): TypeIdentifier {
-	return new TypeIdentifier(s.getToken(/[a-z_]/))
+export function parseTypeIdentifier(s: Source): TypeIdentifier | ParseError {
+	return map(s.tryToken(/[a-z_]/), (x) => new TypeIdentifier(x))
 }
 
 export class NumberNode {
@@ -42,9 +77,8 @@ export class NumberNode {
 	}
 }
 
-export function parseNumber(s: Source): NumberNode {
-	const number = s.getToken(/\d/)
-	return new NumberNode(parseInt(number, 10))
+export function parseNumber(s: Source): NumberNode | ParseError {
+	return map(s.tryToken(/\d/), (x) => new NumberNode(parseInt(x, 10)))
 }
 
 export class StringNode {
@@ -55,25 +89,17 @@ export class StringNode {
 	}
 }
 
-export function parseString(s: Source): StringNode {
-	s.forceSeek("'")
-	let str = ''
-	try {
-		str = s.getToken(/[^']/)
-	} catch (e) {
-		// pass
+export function parseString(s: Source): StringNode | ParseError {
+	const err = s.trySeek("'")
+	if (isError(err)) {
+		return err
 	}
-	s.forceSeek("'")
-	return new StringNode(str)
-}
 
-export function tryParse<T>(s: Source, parser: (s: Source) => T): T | undefined {
-	const s2 = s.clone()
-	try {
-		const v = parser(s2)
-		s.update(s2)
-		return v
-	} catch {
-		return undefined
-	}
+	let str = ''
+	isNotError(s.tryToken(/[^']/), (token) => {
+		str = token
+	})
+
+	force(s.trySeek("'"))
+	return new StringNode(str)
 }
