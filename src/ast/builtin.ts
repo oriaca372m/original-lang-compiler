@@ -1,6 +1,7 @@
 import { Applicative, BinaryOpApplicative, UnaryOpApplicative } from 'Src/ast/applicative'
 import {
 	ValueType,
+	TypeCore,
 	FixedArrayType,
 	intType,
 	stringType,
@@ -128,4 +129,10 @@ export const builtInFunctions: { [key: string]: LangFunction } = {
 		voidType
 	),
 	strlen: new BuiltInFunction('strlen', [stringType], intType),
+}
+
+export const builtInTypes: { [key: string]: TypeCore } = {
+	Int: intType,
+	String: stringType,
+	Void: voidType,
 }

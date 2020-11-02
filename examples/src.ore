@@ -1,28 +1,28 @@
-def p(msg string) void {
+def p(msg String) Void {
 	print_string_length(msg, strlen(msg))
 }
 
-def p(num int) void {
+def p(num Int) Void {
 	print(num)
 }
 
-def p(ptr *int) void {
+def p(ptr *Int) Void {
 	print(*ptr)
 }
 
-def take_void(msg string, v void) void {
+def take_void(msg String, v Void) Void {
 	p(msg)
 }
 
-def main() int {
+def main() Int {
 	let arr = [1, 2, 3]
 	let ptr = &arr[0]
 	p(*ptr)
 
-	let addr = cast<int>(ptr)
+	let addr = cast<Int>(ptr)
 	p(addr)
 
-	let ptr_two = cast<*int>(addr + 8)
+	let ptr_two = cast<*Int>(addr + 8)
 	p(*ptr_two)
 	0
 }

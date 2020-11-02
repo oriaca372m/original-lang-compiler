@@ -93,7 +93,6 @@ export function parseIdentifier(s: Source): Identifier | ParseError {
 	const first = s.clone()
 
 	const str = parseRawIdentifier(s)
-	console.log(str)
 	if (isError(str)) {
 		return str
 	}

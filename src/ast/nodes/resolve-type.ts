@@ -2,24 +2,13 @@ import * as p from 'Src/parser'
 import * as u from 'Src/utils'
 
 import { NameResolver } from 'Src/ast/name'
-import {
-	TypeCore,
-	FixedArrayType,
-	intType,
-	stringType,
-	voidType,
-	PointerType,
-} from 'Src/ast/langtype'
+import { builtInTypes } from 'Src/ast/builtin'
+import { TypeCore, FixedArrayType, PointerType } from 'Src/ast/langtype'
 
 function resolveTypeIdentifier(nr: NameResolver, id: p.TypeIdentifier): TypeCore {
 	const name = id.value
-	const table: { [key: string]: TypeCore } = {
-		int: intType,
-		string: stringType,
-		void: voidType,
-	}
 
-	const type = table[name]
+	const type = builtInTypes[name]
 	if (type !== undefined) {
 		return type
 	}

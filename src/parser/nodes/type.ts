@@ -5,7 +5,7 @@ import * as prim from 'Src/parser/nodes/primitive'
 export class TypeIdentifier extends prim.Identifier {}
 
 function parseTypeIdentifier(s: Source): TypeIdentifier {
-	return new TypeIdentifier(prim.force(s.tryToken(/[a-z_]/)))
+	return new TypeIdentifier(prim.force(prim.parseIdentifier(s)).value)
 }
 
 export class FixedArrayType {
