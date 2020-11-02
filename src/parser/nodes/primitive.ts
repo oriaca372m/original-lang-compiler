@@ -62,8 +62,48 @@ export class Identifier {
 	}
 }
 
+function parseRawIdentifier(s: Source): string | ParseError {
+	const firstCh = s.tryToken(/[a-zA-Z_]/)
+	if (isError(firstCh)) {
+		return new ParseError(s, 'An identifier must start from an alphabet.')
+	}
+
+	let continution = ''
+	if (/[a-zA-Z0-9_]/.test(s.cch)) {
+		continution += s.cch
+		s.next()
+	}
+
+	return `${firstCh}${continution}`
+}
+
+const reservedIdentifiers = [
+	'def',
+	'struct',
+	'if',
+	'else',
+	'while',
+	'break',
+	'let',
+	'newstruct',
+	'cast',
+]
+
 export function parseIdentifier(s: Source): Identifier | ParseError {
-	return map(s.tryToken(/[a-z_]/), (x) => new Identifier(x))
+	const first = s.clone()
+
+	const str = parseRawIdentifier(s)
+	console.log(str)
+	if (isError(str)) {
+		return str
+	}
+
+	if (reservedIdentifiers.includes(str)) {
+		s.update(first)
+		return new ParseError(s, `${str} is reserved.`)
+	}
+
+	return new Identifier(str)
 }
 
 export class NumberNode {
