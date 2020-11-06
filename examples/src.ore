@@ -15,14 +15,15 @@ def take_void(msg String, v Void) Void {
 }
 
 def main() Int {
+	let p2 = p
 	let arr = [1, 2, 3]
 	let ptr = &arr[0]
-	p(*ptr)
+	p2(*ptr)
 
 	let addr = cast<Int>(ptr)
-	p(addr)
+	p2(addr)
 
 	let ptr_two = cast<*Int>(addr + 8)
-	p(*ptr_two)
+	p2(*ptr_two)
 	0
 }

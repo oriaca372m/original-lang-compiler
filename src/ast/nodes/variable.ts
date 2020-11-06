@@ -10,7 +10,8 @@ import * as prim from 'Src/ast/nodes/primitive'
 import { BlockState } from 'Src/ast/nodes/define-function'
 import { Expr, makeExprFormExpr } from 'Src/ast/nodes/expr'
 import { toRValue } from 'Src/ast/nodes/misc'
-import { Ctv, Overload } from 'Src/ast/compile-time'
+import { ImmediateValue } from 'Src/ast/nodes/immediate-value'
+import { Ctv, CtVariable, Overload } from 'Src/ast/compile-time'
 
 export class VariableRef extends prim.ValueNode<Variable> implements prim.TypedNode {
 	get type(): ValueType {
@@ -44,6 +45,8 @@ export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): Expr {
 		return new Expr(new VariableRef(nameValue.value))
 	} else if (nameValue.kind === 'overload') {
 		return new Expr(new Ctv(nameValue.value))
+	} else if (nameValue.kind === 'ct-variable') {
+		return new Expr(nameValue.value.value)
 	}
 
 	throw `変数じゃないなにかを参照してる: ${name}`
@@ -73,9 +76,16 @@ export class LetStmt implements prim.TypedNode {
 	}
 }
 
-export function makeLetStmt(s: BlockState, stmt: p.LetStmt): LetStmt {
+export function makeExprFromLetStmt(s: BlockState, stmt: p.LetStmt): Expr {
+	const name = stmt.name.value
 	const expr = makeExprFormExpr(s, stmt.expr)
-	const variable = new Variable(stmt.name.value, expr.type.core)
-	s.nameResolver.set(new Name(stmt.name.value, { kind: 'variable', value: variable }))
-	return new LetStmt(variable, toRValue(expr))
+	if (expr.value instanceof Ctv) {
+		const ctVariable = new CtVariable(name, expr.value)
+		s.nameResolver.set(new Name(name, { kind: 'ct-variable', value: ctVariable }))
+		return new Expr(new ImmediateValue(undefined))
+	} else {
+		const variable = new Variable(name, expr.type.core)
+		s.nameResolver.set(new Name(name, { kind: 'variable', value: variable }))
+		return new Expr(new LetStmt(variable, toRValue(expr)))
+	}
 }
