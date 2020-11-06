@@ -1,9 +1,7 @@
 import { Variable } from 'Src/ast/variable'
 import { CtVariable } from 'Src/ast/compile-time'
 
-export type NameValueType =
-	| { kind: 'variable'; value: Variable }
-	| { kind: 'ct-variable'; value: CtVariable }
+export type NameValueType = Variable | CtVariable
 
 export class Name {
 	constructor(private readonly _nameString: string, private readonly _value: NameValueType) {}

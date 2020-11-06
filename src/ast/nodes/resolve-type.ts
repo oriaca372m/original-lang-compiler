@@ -4,6 +4,7 @@ import * as u from 'Src/utils'
 import { NameResolver } from 'Src/ast/name'
 import { builtInTypes } from 'Src/ast/builtin'
 import { TypeCore, FixedArrayType, PointerType } from 'Src/ast/langtype'
+import { CtVariable } from 'Src/ast/compile-time'
 
 function resolveTypeIdentifier(nr: NameResolver, id: p.TypeIdentifier): TypeCore {
 	const name = id.value
@@ -14,8 +15,8 @@ function resolveTypeIdentifier(nr: NameResolver, id: p.TypeIdentifier): TypeCore
 	}
 
 	const resolved = nr.resolve(name)
-	if (resolved !== undefined && resolved.value.kind === 'ct-variable') {
-		const ctv = resolved.value.value.value
+	if (resolved !== undefined && resolved.value instanceof CtVariable) {
+		const ctv = resolved.value.value
 		if (ctv.value instanceof TypeCore) {
 			return ctv.value
 		}

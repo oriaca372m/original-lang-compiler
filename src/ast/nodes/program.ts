@@ -37,12 +37,7 @@ export function makeProgram(program: p.Program): Program {
 	for (const defineStruct of program.defineStructs) {
 		const name = defineStruct.name.value
 		const type = new StructType(name, s.langStructManager)
-		s.nameResolver.set(
-			new Name(name, {
-				kind: 'ct-variable',
-				value: new CtVariable(name, new Ctv(type)),
-			})
-		)
+		s.nameResolver.set(new Name(name, new CtVariable(name, new Ctv(type))))
 
 		const langStruct = makeLangStruct(s.nameResolver, defineStruct)
 		s.langStructManager.set(type.name, langStruct)
@@ -57,16 +52,16 @@ export function makeProgram(program: p.Program): Program {
 		const name = s.nameResolver.resolveCurrent(findingName)
 		if (name === undefined) {
 			s.nameResolver.set(
-				new Name(findingName, {
-					kind: 'ct-variable',
-					value: new CtVariable(findingName, new Ctv(new Overload([langFunction]))),
-				})
+				new Name(
+					findingName,
+					new CtVariable(findingName, new Ctv(new Overload([langFunction])))
+				)
 			)
 			continue
 		}
 
-		if (name.value.kind === 'ct-variable') {
-			const ctv = name.value.value.value
+		if (name.value instanceof CtVariable) {
+			const ctv = name.value.value
 			if (ctv.value instanceof Overload) {
 				ctv.value.addCandidate(langFunction)
 				continue

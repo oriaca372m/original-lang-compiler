@@ -133,7 +133,7 @@ export function makeDefineFunction(
 	const params = def.params.value.map((x, i) => {
 		const type = langFunction.argTypes[i]
 		const variable = new Variable(x.name.value, type)
-		dfs.nameResolver.set(new Name(x.name.value, { kind: 'variable', value: variable }))
+		dfs.nameResolver.set(new Name(x.name.value, variable))
 		return new FunctionParam(variable, type)
 	})
 
@@ -141,8 +141,8 @@ export function makeDefineFunction(
 	const localVariables = []
 
 	for (const name of dfs.nameResolver.getAll()) {
-		if (name.value.kind === 'variable') {
-			localVariables.push(name.value.value)
+		if (name.value instanceof Variable) {
+			localVariables.push(name.value)
 		}
 	}
 
