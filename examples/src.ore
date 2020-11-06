@@ -19,10 +19,15 @@ struct Test {
 	next *Test
 }
 
+def show_test_a(t Test) Void {
+	print(t.a)
+}
+
 def main() Int {
-	let val = newstruct Test {}
+	let Alias = Test
+	let val = newstruct Alias {}
 	val.a = 100
-	p(val.a)
+	show_test_a(val)
 
 	let p2 = p
 	let arr = [1, 2, 3]
