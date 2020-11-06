@@ -43,8 +43,6 @@ export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): Expr {
 
 	if (nameValue.kind === 'variable') {
 		return new Expr(new VariableRef(nameValue.value))
-	} else if (nameValue.kind === 'overload') {
-		return new Expr(new Ctv(nameValue.value))
 	} else if (nameValue.kind === 'ct-variable') {
 		return new Expr(nameValue.value.value)
 	}

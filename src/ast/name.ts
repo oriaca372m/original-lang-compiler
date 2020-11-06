@@ -1,10 +1,9 @@
 import { TypeCore } from 'Src/ast/langtype'
 import { Variable } from 'Src/ast/variable'
-import { Overload, CtVariable } from 'Src/ast/compile-time'
+import { CtVariable } from 'Src/ast/compile-time'
 
 export type NameValueType =
 	| { kind: 'type'; value: TypeCore }
-	| { kind: 'overload'; value: Overload }
 	| { kind: 'variable'; value: Variable }
 	| { kind: 'ct-variable'; value: CtVariable }
 
