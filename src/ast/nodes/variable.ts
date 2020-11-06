@@ -1,10 +1,9 @@
 import * as p from 'Src/parser'
 
-import { ValueType, voidType, intType, stringType, rValue, lValue } from 'Src/ast/langtype'
+import { ValueType, voidType, rValue, lValue } from 'Src/ast/langtype'
 import { Variable } from 'Src/ast/variable'
 import { Name } from 'Src/ast/name'
 import { builtInFunctions } from 'Src/ast/builtin'
-import { BuiltInFunction } from 'Src/ast/langfunction'
 
 import * as prim from 'Src/ast/nodes/primitive'
 import { BlockState } from 'Src/ast/nodes/define-function'
@@ -27,15 +26,6 @@ export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): Expr {
 		const func = builtInFunctions[name]
 		if (func !== undefined) {
 			return new Expr(new Ctv(new Overload([func])))
-		}
-
-		if (name === 'overload_test') {
-			const overload = new Overload([
-				new BuiltInFunction('print', [intType], voidType),
-				new BuiltInFunction('print_string_length', [stringType, intType], voidType),
-			])
-
-			return new Expr(new Ctv(overload))
 		}
 
 		throw `名前が見つからない: ${name}`
