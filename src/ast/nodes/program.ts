@@ -4,7 +4,7 @@ import { Name, NameResolver } from 'Src/ast/name'
 import { LangStructManager } from 'Src/ast/langstruct'
 import { StructType } from 'Src/ast/langtype'
 import { LangFunction } from 'Src/ast/langfunction'
-import { Overload } from 'Src/ast/compile-time'
+import { Ctv, CtVariable, Overload } from 'Src/ast/compile-time'
 
 import { DefineFunction, readFunctionDecl, makeDefineFunction } from 'Src/ast/nodes/define-function'
 import { makeLangStruct } from 'Src/ast/nodes/struct'
@@ -53,17 +53,22 @@ export function makeProgram(program: p.Program): Program {
 		if (name === undefined) {
 			s.nameResolver.set(
 				new Name(findingName, {
-					kind: 'overload',
-					value: new Overload([langFunction]),
+					kind: 'ct-variable',
+					value: new CtVariable(findingName, new Ctv(new Overload([langFunction]))),
 				})
 			)
-		} else {
-			if (name.value.kind !== 'overload') {
-				throw `関数以外で使われている名前: ${findingName}`
-			}
-
-			name.value.value.addCandidate(langFunction)
+			continue
 		}
+
+		if (name.value.kind === 'ct-variable') {
+			const ctv = name.value.value.value
+			if (ctv.value instanceof Overload) {
+				ctv.value.addCandidate(langFunction)
+				continue
+			}
+		}
+
+		throw `関数以外で使われている名前: ${findingName}`
 	}
 
 	for (const [defFunction, langFunction] of langFunctionMap) {

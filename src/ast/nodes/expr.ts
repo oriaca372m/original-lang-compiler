@@ -9,7 +9,12 @@ import { If, makeIf } from 'Src/ast/nodes/if'
 import { While, makeWhile, Break, makeBreak } from 'Src/ast/nodes/while'
 import { ArrayLiteral, makeArrayLiteral } from 'Src/ast/nodes/array'
 import { makeNewStruct, NewStruct, MemberAccess } from 'Src/ast/nodes/struct'
-import { VariableRef, LetStmt, makeExprFromIdentifier, makeLetStmt } from 'Src/ast/nodes/variable'
+import {
+	VariableRef,
+	LetStmt,
+	makeExprFromIdentifier,
+	makeExprFromLetStmt,
+} from 'Src/ast/nodes/variable'
 import { ApplyFunction, makeExprFromInterpretedOperand } from 'Src/ast/nodes/apply-function'
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { Return, ConvertToRValue } from 'Src/ast/nodes/misc'
@@ -80,7 +85,7 @@ export function makeExprFormStmt(s: BlockState, stmt: p.Stmt): Expr {
 	if (v instanceof p.Expr) {
 		return makeExprFormExpr(s, v)
 	} else if (v instanceof p.LetStmt) {
-		return new Expr(makeLetStmt(s, v))
+		return makeExprFromLetStmt(s, v)
 	} else {
 		u.unreachable(v)
 	}
