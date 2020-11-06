@@ -14,8 +14,11 @@ function resolveTypeIdentifier(nr: NameResolver, id: p.TypeIdentifier): TypeCore
 	}
 
 	const resolved = nr.resolve(name)
-	if (resolved !== undefined && resolved.value.kind === 'type') {
-		return resolved.value.value
+	if (resolved !== undefined && resolved.value.kind === 'ct-variable') {
+		const ctv = resolved.value.value.value
+		if ('kind' in ctv.value && ctv.value.kind === 'type') {
+			return ctv.value.value
+		}
 	}
 
 	throw `unknown type! ${name}`

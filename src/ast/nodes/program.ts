@@ -37,7 +37,12 @@ export function makeProgram(program: p.Program): Program {
 	for (const defineStruct of program.defineStructs) {
 		const name = defineStruct.name.value
 		const type = new StructType(name, s.langStructManager)
-		s.nameResolver.set(new Name(name, { kind: 'type', value: type }))
+		s.nameResolver.set(
+			new Name(name, {
+				kind: 'ct-variable',
+				value: new CtVariable(name, new Ctv({ kind: 'type', value: type })),
+			})
+		)
 
 		const langStruct = makeLangStruct(s.nameResolver, defineStruct)
 		s.langStructManager.set(type.name, langStruct)

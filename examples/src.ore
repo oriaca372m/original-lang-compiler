@@ -14,7 +14,16 @@ def take_void(msg String, v Void) Void {
 	p(msg)
 }
 
+struct Test {
+	a Int
+	next *Test
+}
+
 def main() Int {
+	let val = newstruct Test {}
+	val.a = 100
+	p(val.a)
+
 	let p2 = p
 	let arr = [1, 2, 3]
 	let ptr = &arr[0]
