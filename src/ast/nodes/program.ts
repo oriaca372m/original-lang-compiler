@@ -40,7 +40,7 @@ export function makeProgram(program: p.Program): Program {
 		s.nameResolver.set(
 			new Name(name, {
 				kind: 'ct-variable',
-				value: new CtVariable(name, new Ctv({ kind: 'type', value: type })),
+				value: new CtVariable(name, new Ctv(type)),
 			})
 		)
 

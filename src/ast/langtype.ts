@@ -62,9 +62,7 @@ export class ValueType<Core extends TypeCore = TypeCore> {
 	}
 }
 
-export type TypeCore = PrimitiveType | FixedArrayType | PointerType | FunctionType | StructType
-
-export abstract class TypeCoreBase {
+export abstract class TypeCore {
 	abstract name: string
 	abstract size: number
 
@@ -77,7 +75,7 @@ export abstract class TypeCoreBase {
 	}
 }
 
-export class PrimitiveType extends TypeCoreBase {
+export class PrimitiveType extends TypeCore {
 	constructor(private readonly _name: string, private readonly _size: number) {
 		super()
 	}
@@ -91,7 +89,7 @@ export class PrimitiveType extends TypeCoreBase {
 	}
 }
 
-export class FixedArrayType extends TypeCoreBase {
+export class FixedArrayType extends TypeCore {
 	constructor(private readonly _elmType: TypeCore, private readonly _length: number) {
 		super()
 	}
@@ -109,7 +107,7 @@ export class FixedArrayType extends TypeCoreBase {
 	}
 }
 
-export class PointerType extends TypeCoreBase {
+export class PointerType extends TypeCore {
 	constructor(private readonly _elmType: TypeCore) {
 		super()
 	}
@@ -127,7 +125,7 @@ export class PointerType extends TypeCoreBase {
 	}
 }
 
-export class FunctionType extends TypeCoreBase {
+export class FunctionType extends TypeCore {
 	constructor(private readonly _argTypes: TypeCore[], private readonly _resultType: TypeCore) {
 		super()
 	}
@@ -150,7 +148,7 @@ export class FunctionType extends TypeCoreBase {
 	}
 }
 
-export class StructType extends TypeCoreBase {
+export class StructType extends TypeCore {
 	constructor(
 		private readonly _name: string,
 		private readonly _langStructManager: LangStructManager

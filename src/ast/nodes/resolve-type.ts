@@ -16,8 +16,8 @@ function resolveTypeIdentifier(nr: NameResolver, id: p.TypeIdentifier): TypeCore
 	const resolved = nr.resolve(name)
 	if (resolved !== undefined && resolved.value.kind === 'ct-variable') {
 		const ctv = resolved.value.value.value
-		if ('kind' in ctv.value && ctv.value.kind === 'type') {
-			return ctv.value.value
+		if (ctv.value instanceof TypeCore) {
+			return ctv.value
 		}
 	}
 

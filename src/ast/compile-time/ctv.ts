@@ -5,7 +5,7 @@ import { Expr } from 'Src/ast/nodes/expr'
 import { Overload } from 'Src/ast/compile-time/overload'
 import { convertCtvToExpr } from 'Src/ast/compile-time/utils'
 
-type CtvType = Overload | { kind: 'type'; value: TypeCore }
+type CtvType = Overload | TypeCore
 
 // Compile time value
 export class Ctv implements prim.TypedNode {
