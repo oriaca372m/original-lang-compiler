@@ -1,9 +1,7 @@
-import { TypeCore } from 'Src/ast/langtype'
 import { Variable } from 'Src/ast/variable'
 import { CtVariable } from 'Src/ast/compile-time'
 
 export type NameValueType =
-	| { kind: 'type'; value: TypeCore }
 	| { kind: 'variable'; value: Variable }
 	| { kind: 'ct-variable'; value: CtVariable }
 
