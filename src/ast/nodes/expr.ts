@@ -61,6 +61,8 @@ function makeExprFromTerm(s: BlockState, term: p.Term): Expr {
 		return new Expr(makeNewStruct(s, v))
 	} else if (v instanceof p.Cast) {
 		return new Expr(makeCast(s, v))
+	} else if (v instanceof p.DefFunctionExpr) {
+		u.notImplemented()
 	} else {
 		u.unreachable(v)
 	}

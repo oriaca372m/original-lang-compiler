@@ -16,7 +16,7 @@ export class FunctionParam {
 	}
 }
 
-function parseFunctionParams(s: Source): prim.ListNode<FunctionParam> | ParseError {
+export function parseFunctionParams(s: Source): prim.ListNode<FunctionParam> | ParseError {
 	const params = []
 
 	const err = s.trySeek('(')
