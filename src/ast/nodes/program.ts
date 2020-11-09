@@ -5,14 +5,29 @@ import { LangStructManager } from 'Src/ast/langstruct'
 import { StructType } from 'Src/ast/langtype'
 import { LangFunction } from 'Src/ast/langfunction'
 import { Ctv, CtVariable, Overload } from 'Src/ast/compile-time'
+import { builtInFunctions, builtInTypes } from 'Src/ast/builtin'
 
 import { DefineFunction, readFunctionDecl, makeDefineFunction } from 'Src/ast/nodes/define-function'
 import { makeLangStruct } from 'Src/ast/nodes/struct'
 
 export class ProgramState {
-	private readonly _nameResolver = new NameResolver()
+	private readonly _nameResolver: NameResolver
 	private readonly _langStructManager = new LangStructManager()
 	private readonly _anonymousFunctions: DefineFunction[] = []
+
+	constructor() {
+		const rootNameResolver = new NameResolver()
+
+		for (const [name, type] of Object.entries(builtInTypes)) {
+			rootNameResolver.set(new Name(name, new CtVariable(name, new Ctv(type))))
+		}
+
+		for (const [name, lf] of Object.entries(builtInFunctions)) {
+			rootNameResolver.set(new Name(name, new CtVariable(name, new Ctv(new Overload([lf])))))
+		}
+
+		this._nameResolver = rootNameResolver.createChild()
+	}
 
 	get nameResolver(): NameResolver {
 		return this._nameResolver

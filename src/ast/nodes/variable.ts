@@ -3,14 +3,13 @@ import * as p from 'Src/parser'
 import { ValueType, voidType, rValue, lValue } from 'Src/ast/langtype'
 import { Variable } from 'Src/ast/variable'
 import { Name } from 'Src/ast/name'
-import { builtInFunctions } from 'Src/ast/builtin'
 
 import * as prim from 'Src/ast/nodes/primitive'
 import { BlockState } from 'Src/ast/nodes/define-function'
 import { Expr, makeExprFormExpr } from 'Src/ast/nodes/expr'
 import { toRValue } from 'Src/ast/nodes/misc'
 import { ImmediateValue } from 'Src/ast/nodes/immediate-value'
-import { Ctv, CtVariable, Overload } from 'Src/ast/compile-time'
+import { Ctv, CtVariable } from 'Src/ast/compile-time'
 
 export class VariableRef extends prim.ValueNode<Variable> implements prim.TypedNode {
 	get type(): ValueType {
@@ -23,11 +22,6 @@ export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): Expr {
 	const nameValue = s.nameResolver.resolve(v.value)?.value
 
 	if (nameValue === undefined) {
-		const func = builtInFunctions[name]
-		if (func !== undefined) {
-			return new Expr(new Ctv(new Overload([func])))
-		}
-
 		throw `名前が見つからない: ${name}`
 	}
 
