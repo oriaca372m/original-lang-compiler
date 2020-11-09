@@ -31,10 +31,10 @@ export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): Expr {
 		throw `名前が見つからない: ${name}`
 	}
 
-	if (nameValue.kind === 'variable') {
-		return new Expr(new VariableRef(nameValue.value))
-	} else if (nameValue.kind === 'ct-variable') {
-		return new Expr(nameValue.value.value)
+	if (nameValue instanceof Variable) {
+		return new Expr(new VariableRef(nameValue))
+	} else if (nameValue instanceof CtVariable) {
+		return new Expr(nameValue.value)
 	}
 
 	throw `変数じゃないなにかを参照してる: ${name}`
@@ -68,12 +68,11 @@ export function makeExprFromLetStmt(s: BlockState, stmt: p.LetStmt): Expr {
 	const name = stmt.name.value
 	const expr = makeExprFormExpr(s, stmt.expr)
 	if (expr.value instanceof Ctv) {
-		const ctVariable = new CtVariable(name, expr.value)
-		s.nameResolver.set(new Name(name, { kind: 'ct-variable', value: ctVariable }))
+		s.nameResolver.set(new Name(name, new CtVariable(name, expr.value)))
 		return new Expr(new ImmediateValue(undefined))
 	} else {
 		const variable = new Variable(name, expr.type.core)
-		s.nameResolver.set(new Name(name, { kind: 'variable', value: variable }))
+		s.nameResolver.set(new Name(name, variable))
 		return new Expr(new LetStmt(variable, toRValue(expr)))
 	}
 }

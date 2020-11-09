@@ -14,7 +14,21 @@ def take_void(msg String, v Void) Void {
 	p(msg)
 }
 
+struct Test {
+	a Int
+	next *Test
+}
+
+def show_test_a(t Test) Void {
+	print(t.a)
+}
+
 def main() Int {
+	let Alias = Test
+	let val = newstruct Alias {}
+	val.a = 100
+	show_test_a(val)
+
 	let p2 = p
 	let arr = [1, 2, 3]
 	let ptr = &arr[0]

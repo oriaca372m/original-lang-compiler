@@ -1,11 +1,11 @@
 import * as prim from 'Src/ast/nodes/primitive'
-import { ValueType } from 'Src/ast/langtype'
+import { ValueType, TypeCore } from 'Src/ast/langtype'
 import { Expr } from 'Src/ast/nodes/expr'
 
 import { Overload } from 'Src/ast/compile-time/overload'
 import { convertCtvToExpr } from 'Src/ast/compile-time/utils'
 
-type CtvType = Overload
+type CtvType = Overload | TypeCore
 
 // Compile time value
 export class Ctv implements prim.TypedNode {
