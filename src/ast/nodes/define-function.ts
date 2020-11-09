@@ -65,9 +65,9 @@ export class FunctionParam {
 	}
 }
 
-export function makeFunctionBody(s: DefineFunctionState, def: p.DefFunction): MultipleExpr {
+export function makeFunctionBody(s: DefineFunctionState, body: p.MultipleStmt): MultipleExpr {
 	const bs = new BlockState(s, s.nameResolver.createChild())
-	const stmts = makeMultipleExpr(bs, def.body).exprs
+	const stmts = makeMultipleExpr(bs, body).exprs
 
 	const resultType = s.langFunction.resultType
 
@@ -137,7 +137,7 @@ export function makeDefineFunction(
 		return new FunctionParam(variable, type)
 	})
 
-	const body = makeFunctionBody(dfs, def)
+	const body = makeFunctionBody(dfs, def.body)
 	const localVariables = []
 
 	for (const name of dfs.nameResolver.getAll()) {
