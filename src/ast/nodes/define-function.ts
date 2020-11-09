@@ -138,13 +138,9 @@ export function makeDefineFunction(
 	})
 
 	const body = makeFunctionBody(dfs, def.body)
-	const localVariables = []
-
-	for (const name of dfs.nameResolver.getAll()) {
-		if (name.value instanceof Variable) {
-			localVariables.push(name.value)
-		}
-	}
+	const localVariables = [...dfs.nameResolver.getAll()].flatMap((x) =>
+		x.value instanceof Variable ? [x.value] : []
+	)
 
 	return new DefineFunction(def.name.value, langFunction, params, localVariables, body)
 }
