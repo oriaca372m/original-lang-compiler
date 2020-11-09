@@ -10,34 +10,11 @@ def p(ptr *Int) Void {
 	print(*ptr)
 }
 
-def take_void(msg String, v Void) Void {
-	p(msg)
-}
-
-struct Test {
-	a Int
-	next *Test
-}
-
-def show_test_a(t Test) Void {
-	print(t.a)
-}
-
 def main() Int {
-	let Alias = Test
-	let val = newstruct Alias {}
-	val.a = 100
-	show_test_a(val)
+	let add = def (a Int, b Int) Int {
+		a + b
+	}
 
-	let p2 = p
-	let arr = [1, 2, 3]
-	let ptr = &arr[0]
-	p2(*ptr)
-
-	let addr = cast<Int>(ptr)
-	p2(addr)
-
-	let ptr_two = cast<*Int>(addr + 8)
-	p2(*ptr_two)
+	p(add(1, 2))
 	0
 }

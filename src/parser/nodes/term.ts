@@ -7,6 +7,7 @@ import { ArrayLiteral, parseArrayLiteral } from 'Src/parser/nodes/array'
 import { Expr, parseExpr } from 'Src/parser/nodes/expr'
 import { NewStruct, parseNewStruct } from 'Src/parser/nodes/struct'
 import { Cast, parseCast } from 'Src/parser/nodes/cast'
+import { DefFunctionExpr, parseDefFunctionExpr } from 'Src/parser/nodes/define-function-expr'
 
 export class Bracket extends prim.ValueNode<Expr> {}
 
@@ -35,6 +36,7 @@ type TermType =
 	| ArrayLiteral
 	| NewStruct
 	| Cast
+	| DefFunctionExpr
 export class Term extends prim.ValueNode<TermType> {
 	// TODO: どうもTypeScriptの型チェックがガバガバなののワークアラウンド
 	_className_Term: undefined
@@ -47,6 +49,7 @@ export function parseTerm(s: Source): Term | ParseError {
 		(s) => prim.map(parseBreak(s), (x) => new Term(x)),
 		(s) => prim.map(parseNewStruct(s), (x) => new Term(x)),
 		(s) => prim.map(parseCast(s), (x) => new Term(x)),
+		(s) => prim.map(parseDefFunctionExpr(s), (x) => new Term(x)),
 		(s) => prim.map(parseArrayLiteral(s), (x) => new Term(x)),
 		(s) => prim.map(prim.parseNumber(s), (x) => new Term(x)),
 		(s) => prim.map(prim.parseString(s), (x) => new Term(x)),

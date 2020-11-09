@@ -12,6 +12,7 @@ import { makeLangStruct } from 'Src/ast/nodes/struct'
 export class ProgramState {
 	private readonly _nameResolver = new NameResolver()
 	private readonly _langStructManager = new LangStructManager()
+	private readonly _anonymousFunctions: DefineFunction[] = []
 
 	get nameResolver(): NameResolver {
 		return this._nameResolver
@@ -19,6 +20,10 @@ export class ProgramState {
 
 	get langStructManager(): LangStructManager {
 		return this._langStructManager
+	}
+
+	get anonymousFunctions(): DefineFunction[] {
+		return this._anonymousFunctions
 	}
 }
 
@@ -75,5 +80,5 @@ export function makeProgram(program: p.Program): Program {
 		defineFunctions.push(makeDefineFunction(s, defFunction, langFunction))
 	}
 
-	return new Program(defineFunctions)
+	return new Program(defineFunctions.concat(s.anonymousFunctions))
 }

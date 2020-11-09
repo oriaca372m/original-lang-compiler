@@ -19,6 +19,7 @@ import { ApplyFunction, makeExprFromInterpretedOperand } from 'Src/ast/nodes/app
 import { ApplyApplicative } from 'Src/ast/nodes/apply-applicative'
 import { Return, ConvertToRValue } from 'Src/ast/nodes/misc'
 import { Cast, makeCast } from 'Src/ast/nodes/cast'
+import { makeExprFromDefFunctionExpr } from 'Src/ast/nodes/define-function-expr'
 
 import * as u from 'Src/utils'
 
@@ -61,6 +62,8 @@ function makeExprFromTerm(s: BlockState, term: p.Term): Expr {
 		return new Expr(makeNewStruct(s, v))
 	} else if (v instanceof p.Cast) {
 		return new Expr(makeCast(s, v))
+	} else if (v instanceof p.DefFunctionExpr) {
+		return makeExprFromDefFunctionExpr(s, v)
 	} else {
 		u.unreachable(v)
 	}
