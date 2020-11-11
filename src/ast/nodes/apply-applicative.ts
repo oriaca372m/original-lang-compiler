@@ -1,10 +1,10 @@
 import { ValueType } from 'Src/ast/langtype'
 import { Applicative } from 'Src/ast/applicative'
 
-import * as prim from 'Src/ast/nodes/primitive'
-import { Expr } from 'Src/ast/nodes/expr'
+import { TypedNode } from './primitive'
+import { Expr } from './expr'
 
-export class ApplyApplicative implements prim.TypedNode {
+export class ApplyApplicative implements TypedNode {
 	private readonly _resultType: ValueType
 	private readonly _args: Expr[]
 

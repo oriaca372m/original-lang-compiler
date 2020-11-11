@@ -12,8 +12,8 @@ import {
 } from 'Src/ast/langtype'
 import { BuiltInFunction, LangFunction } from 'Src/ast/langfunction'
 
-import { Expr } from 'Src/ast/nodes/expr'
-import { toRValue } from 'Src/ast/nodes/misc'
+import { Expr } from 'Src/ast/nodes'
+import { toRValue } from 'Src/ast/maker'
 
 class Substitution extends BinaryOpApplicative {
 	readonly name: string = 'substitution'

@@ -1,13 +1,10 @@
-import * as p from 'Src/parser'
-
 import { ValueType, intType, voidType, rValue } from 'Src/ast/langtype'
 
-import * as prim from 'Src/ast/nodes/primitive'
-import { BlockState } from 'Src/ast/nodes/define-function'
-import { MultipleExpr, makeMultipleExpr } from 'Src/ast/nodes/misc'
-import { Expr, makeExprFormExpr } from 'Src/ast/nodes/expr'
+import { TypedNode } from './primitive'
+import { MultipleExpr } from './misc'
+import { Expr } from './expr'
 
-export class While implements prim.TypedNode {
+export class While implements TypedNode {
 	private _cond!: Expr
 	private _body!: MultipleExpr
 
@@ -33,16 +30,7 @@ export class While implements prim.TypedNode {
 	}
 }
 
-export function makeWhile(s: BlockState, whileNode: p.While): While {
-	const node = new While()
-	const oldWhile = s.dfs.currentWhile
-	s.dfs.currentWhile = node
-	node.init(makeExprFormExpr(s, whileNode.cond), makeMultipleExpr(s, whileNode.body))
-	s.dfs.currentWhile = oldWhile
-	return node
-}
-
-export class Break implements prim.TypedNode {
+export class Break implements TypedNode {
 	constructor(private readonly _target: While) {}
 
 	get target(): While {
@@ -52,12 +40,4 @@ export class Break implements prim.TypedNode {
 	get type(): ValueType {
 		return new ValueType(voidType, rValue)
 	}
-}
-
-export function makeBreak(s: BlockState): Break {
-	if (s.dfs.currentWhile === undefined) {
-		throw 'breakはwhileの中で使うべし'
-	}
-
-	return new Break(s.dfs.currentWhile)
 }
