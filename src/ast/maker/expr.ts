@@ -2,7 +2,6 @@ import * as p from 'Src/parser'
 
 import * as nodes from 'Src/ast/nodes'
 import { BlockState } from './define-function'
-import { makeImmdiateValue } from './immediate-value'
 import { makeIf } from './if'
 import { makeWhile, makeBreak } from './while'
 import { makeArrayLiteral } from './array'
@@ -23,7 +22,7 @@ function makeExprFromTerm(s: BlockState, term: p.Term): nodes.Expr {
 	const v = term.value
 
 	if (v instanceof p.NumberNode || v instanceof p.StringNode) {
-		return new nodes.Expr(makeImmdiateValue(v))
+		return new nodes.Expr(new nodes.ImmediateValue(v.value))
 	} else if (v instanceof p.Bracket) {
 		return makeExpr(s, v.value)
 	} else if (v instanceof p.Identifier) {
