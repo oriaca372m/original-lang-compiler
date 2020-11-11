@@ -6,7 +6,7 @@ import { Ctv, CtVariable } from 'Src/ast/compile-time'
 
 import * as nodes from 'Src/ast/nodes'
 import { BlockState } from './define-function'
-import { makeExprFormExpr } from './expr'
+import { makeExpr } from './expr'
 import { toRValue } from './misc'
 
 export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): nodes.Expr {
@@ -28,7 +28,7 @@ export function makeExprFromIdentifier(s: BlockState, v: p.Identifier): nodes.Ex
 
 export function makeExprFromLetStmt(s: BlockState, stmt: p.LetStmt): nodes.Expr {
 	const name = stmt.name.value
-	const expr = makeExprFormExpr(s, stmt.expr)
+	const expr = makeExpr(s, stmt.expr)
 	if (expr.value instanceof Ctv) {
 		s.nameResolver.set(new Name(name, new CtVariable(name, expr.value)))
 		return new nodes.Expr(new nodes.ImmediateValue(undefined))

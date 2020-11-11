@@ -14,13 +14,18 @@ import { makeExprFromDefFunctionExpr } from './define-function-expr'
 
 import * as u from 'Src/utils'
 
+export function makeExpr(s: BlockState, expr: p.Expr): nodes.Expr {
+	const interpreted = p.interpretOps(expr)
+	return makeExprFromInterpretedOperand(s, interpreted)
+}
+
 function makeExprFromTerm(s: BlockState, term: p.Term): nodes.Expr {
 	const v = term.value
 
 	if (v instanceof p.NumberNode || v instanceof p.StringNode) {
 		return new nodes.Expr(makeImmdiateValue(v))
 	} else if (v instanceof p.Bracket) {
-		return makeExprFormExpr(s, v.value)
+		return makeExpr(s, v.value)
 	} else if (v instanceof p.Identifier) {
 		return makeExprFromIdentifier(s, v)
 	} else if (v instanceof p.If) {
@@ -51,15 +56,10 @@ export function makeExprFromOperand(s: BlockState, operand: p.Operand): nodes.Ex
 	}
 }
 
-export function makeExprFormExpr(s: BlockState, expr: p.Expr): nodes.Expr {
-	const interpreted = p.interpretOps(expr)
-	return makeExprFromInterpretedOperand(s, interpreted)
-}
-
 export function makeExprFormStmt(s: BlockState, stmt: p.Stmt): nodes.Expr {
 	const v = stmt.value
 	if (v instanceof p.Expr) {
-		return makeExprFormExpr(s, v)
+		return makeExpr(s, v)
 	} else if (v instanceof p.LetStmt) {
 		return makeExprFromLetStmt(s, v)
 	} else {

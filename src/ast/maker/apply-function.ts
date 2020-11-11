@@ -10,7 +10,7 @@ import { resolveOverload } from 'Src/ast/overload-resolver'
 
 import * as nodes from 'Src/ast/nodes'
 import { BlockState } from './define-function'
-import { makeExprFormExpr, makeExprFromOperand } from './expr'
+import { makeExpr, makeExprFromOperand } from './expr'
 import { toRValue } from './misc'
 import { makeMemberAccess } from './struct'
 
@@ -22,7 +22,7 @@ export function makeApplyFunctionFormFunctionCall(
 	argsNode: p.FunctionCallArgument
 ): nodes.ApplyFunction {
 	let funcExpr = makeExprFromInterpretedOperand(s, funcNode)
-	const args = argsNode.args.value.map((x) => makeExprFormExpr(s, x))
+	const args = argsNode.args.value.map((x) => makeExpr(s, x))
 
 	if (funcExpr.value instanceof Ctv) {
 		const overload = funcExpr.value.value
@@ -92,7 +92,7 @@ function makeExprFromApplySuffix(s: BlockState, value: p.ApplySuffix): nodes.Exp
 		return new nodes.Expr(
 			new nodes.ApplyApplicative(builtInBinaryOpApplicatives['@'], [
 				makeExprFromInterpretedOperand(s, value.operand),
-				makeExprFormExpr(s, v.value),
+				makeExpr(s, v.value),
 			])
 		)
 	} else if (v instanceof p.MemberAccess) {
