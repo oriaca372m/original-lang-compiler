@@ -1,4 +1,4 @@
-import { Expr } from 'Src/ast/nodes/expr'
+import { Expr } from 'Src/ast/nodes'
 import { ValueType } from 'Src/ast/langtype'
 
 export abstract class Applicative {

@@ -1,5 +1,5 @@
 import { TypeCore, ValueType, FixedArrayType, rValue } from 'Src/ast/langtype'
-import { toRValue } from 'Src/ast/maker/misc'
+import { toRValue } from 'Src/ast/maker'
 
 import { TypedNode } from './primitive'
 import { Expr } from './expr'

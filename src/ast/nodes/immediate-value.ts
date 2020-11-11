@@ -3,7 +3,7 @@ import * as u from 'Src/utils'
 import { ValueType, FunctionType, rValue, intType, stringType, voidType } from 'Src/ast/langtype'
 import { LangFunction } from 'Src/ast/langfunction'
 
-import { TypedNode } from 'Src/ast/nodes/primitive'
+import { TypedNode } from './primitive'
 
 type ImmediateValueTypes = number | string | undefined | LangFunction
 

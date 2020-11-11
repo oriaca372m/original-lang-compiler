@@ -1,5 +1,5 @@
 import { ValueType, rValue, intType, voidType } from 'Src/ast/langtype'
-import { forceVoid } from 'Src/ast/maker/misc'
+import { forceVoid } from 'Src/ast/maker'
 
 import { TypedNode } from './primitive'
 import { MultipleExpr } from './misc'
