@@ -1,8 +1,7 @@
 import { ValueType, intType, voidType, rValue } from 'Src/ast/langtype'
 
 import { TypedNode } from './primitive'
-import { MultipleExpr } from './misc'
-import { Expr } from './expr'
+import { Expr, MultipleExpr } from './expr'
 
 export class While implements TypedNode {
 	private _cond!: Expr

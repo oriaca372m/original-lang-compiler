@@ -8,7 +8,7 @@ import { Name, NameResolver } from 'Src/ast/name'
 
 import * as nodes from 'Src/ast/nodes'
 import { ProgramState } from './program'
-import { makeMultipleExpr } from './misc'
+import { makeMultipleExpr } from './expr'
 import { resolveType } from './resolve-type'
 
 export class BlockState {

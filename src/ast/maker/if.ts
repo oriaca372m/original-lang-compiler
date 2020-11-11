@@ -2,8 +2,7 @@ import * as p from 'Src/parser'
 
 import * as nodes from 'Src/ast/nodes'
 import { BlockState } from './define-function'
-import { makeMultipleExpr } from './misc'
-import { makeExprFormExpr } from './expr'
+import { makeExprFormExpr, makeMultipleExpr } from './expr'
 
 export function makeIf(s: BlockState, ifNode: p.If): nodes.If {
 	return new nodes.If(

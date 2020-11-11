@@ -2,7 +2,7 @@ import { LangFunction } from 'Src/ast/langfunction'
 import { Variable } from 'Src/ast/variable'
 import { TypeCore } from 'Src/ast/langtype'
 
-import { MultipleExpr } from './misc'
+import { MultipleExpr } from './expr'
 
 export class FunctionParam {
 	constructor(private readonly _variable: Variable, private readonly _typeCore: TypeCore) {}

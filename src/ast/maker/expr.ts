@@ -66,3 +66,9 @@ export function makeExprFormStmt(s: BlockState, stmt: p.Stmt): nodes.Expr {
 		u.unreachable(v)
 	}
 }
+
+export function makeMultipleExpr(s: BlockState, stmts: p.MultipleStmt): nodes.MultipleExpr {
+	const bs = new BlockState(s.dfs, s.nameResolver.createChild())
+	const exprs = stmts.value.map((x) => makeExprFormStmt(bs, x))
+	return new nodes.MultipleExpr(exprs)
+}

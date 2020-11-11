@@ -2,8 +2,7 @@ import { ValueType, rValue, intType, voidType } from 'Src/ast/langtype'
 import { forceVoid } from 'Src/ast/maker'
 
 import { TypedNode } from './primitive'
-import { MultipleExpr } from './misc'
-import { Expr } from './expr'
+import { Expr, MultipleExpr } from './expr'
 
 // コンパイラは戻り値の処理をよしなにやってくれる多分
 export class If implements TypedNode {
