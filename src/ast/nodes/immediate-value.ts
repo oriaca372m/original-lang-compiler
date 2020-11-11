@@ -1,14 +1,13 @@
-import * as p from 'Src/parser'
 import * as u from 'Src/utils'
 
 import { ValueType, FunctionType, rValue, intType, stringType, voidType } from 'Src/ast/langtype'
 import { LangFunction } from 'Src/ast/langfunction'
 
-import * as prim from 'Src/ast/nodes/primitive'
+import { TypedNode } from './primitive'
 
 type ImmediateValueTypes = number | string | undefined | LangFunction
 
-export class ImmediateValue implements prim.TypedNode {
+export class ImmediateValue implements TypedNode {
 	private readonly _type: ValueType
 
 	constructor(private readonly _value: ImmediateValueTypes) {
@@ -32,8 +31,4 @@ export class ImmediateValue implements prim.TypedNode {
 	get type(): ValueType {
 		return this._type
 	}
-}
-
-export function makeImmdiateValue(value: p.NumberNode | p.StringNode): ImmediateValue {
-	return new ImmediateValue(value.value)
 }

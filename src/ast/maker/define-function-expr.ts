@@ -4,22 +4,16 @@ import { v4 as uuidv4 } from 'uuid'
 import { NormalFunction } from 'Src/ast/langfunction'
 import { Variable } from 'Src/ast/variable'
 import { Name } from 'Src/ast/name'
-
-import { resolveType } from 'Src/ast/nodes/resolve-type'
-import {
-	DefineFunction,
-	DefineFunctionState,
-	FunctionParam,
-	BlockState,
-	makeFunctionBody,
-} from 'Src/ast/nodes/define-function'
-import { Expr } from 'Src/ast/nodes/expr'
 import { Ctv, Overload } from 'Src/ast/compile-time'
+
+import * as nodes from 'Src/ast/nodes'
+import { resolveType } from './resolve-type'
+import { DefineFunctionState, BlockState, makeFunctionBody } from './define-function'
 
 function makeDefineFunctionFormDefineFunctionExpr(
 	bs: BlockState,
 	def: p.DefFunctionExpr
-): DefineFunction {
+): nodes.DefineFunction {
 	const ps = bs.ps
 
 	const argTypes = def.params.value.map((x) => resolveType(ps.nameResolver, x.type))
@@ -32,7 +26,7 @@ function makeDefineFunctionFormDefineFunctionExpr(
 		const type = argTypes[i]
 		const variable = new Variable(x.name.value, type)
 		dfs.nameResolver.set(new Name(x.name.value, variable))
-		return new FunctionParam(variable, type)
+		return new nodes.FunctionParam(variable, type)
 	})
 
 	const body = makeFunctionBody(dfs, def.body)
@@ -40,7 +34,7 @@ function makeDefineFunctionFormDefineFunctionExpr(
 		x.value instanceof Variable ? [x.value] : []
 	)
 
-	return new DefineFunction(
+	return new nodes.DefineFunction(
 		`__anonymous_from_${bs.dfs.langFunction.name}`,
 		langFunction,
 		params,
@@ -49,8 +43,8 @@ function makeDefineFunctionFormDefineFunctionExpr(
 	)
 }
 
-export function makeExprFromDefFunctionExpr(s: BlockState, def: p.DefFunctionExpr): Expr {
+export function makeExprFromDefFunctionExpr(s: BlockState, def: p.DefFunctionExpr): nodes.Expr {
 	const defineFunction = makeDefineFunctionFormDefineFunctionExpr(s, def)
 	s.ps.anonymousFunctions.push(defineFunction)
-	return new Expr(new Ctv(new Overload([defineFunction.langFunction])))
+	return new nodes.Expr(new Ctv(new Overload([defineFunction.langFunction])))
 }

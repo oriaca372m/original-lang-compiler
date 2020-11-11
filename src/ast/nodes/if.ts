@@ -1,14 +1,11 @@
-import * as p from 'Src/parser'
-
 import { ValueType, rValue, intType, voidType } from 'Src/ast/langtype'
+import { forceVoid } from 'Src/ast/maker'
 
-import * as prim from 'Src/ast/nodes/primitive'
-import { BlockState } from 'Src/ast/nodes/define-function'
-import { MultipleExpr, makeMultipleExpr, forceVoid } from 'Src/ast/nodes/misc'
-import { Expr, makeExprFormExpr } from 'Src/ast/nodes/expr'
+import { TypedNode } from './primitive'
+import { Expr, MultipleExpr } from './expr'
 
 // コンパイラは戻り値の処理をよしなにやってくれる多分
-export class If implements prim.TypedNode {
+export class If implements TypedNode {
 	private readonly _type: ValueType
 
 	constructor(
@@ -50,12 +47,4 @@ export class If implements prim.TypedNode {
 	get type(): ValueType {
 		return this._type
 	}
-}
-
-export function makeIf(s: BlockState, ifNode: p.If): If {
-	return new If(
-		makeExprFormExpr(s, ifNode.cond),
-		makeMultipleExpr(s, ifNode.body),
-		ifNode.elseBody === undefined ? undefined : makeMultipleExpr(s, ifNode.elseBody)
-	)
 }

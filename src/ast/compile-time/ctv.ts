@@ -1,6 +1,6 @@
 import * as prim from 'Src/ast/nodes/primitive'
+import { Expr } from 'Src/ast/nodes'
 import { ValueType, TypeCore } from 'Src/ast/langtype'
-import { Expr } from 'Src/ast/nodes/expr'
 
 import { Overload } from 'Src/ast/compile-time/overload'
 import { convertCtvToExpr } from 'Src/ast/compile-time/utils'

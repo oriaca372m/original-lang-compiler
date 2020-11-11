@@ -1,41 +1,10 @@
-import * as p from 'Src/parser'
-
-import { NameResolver } from 'Src/ast/name'
-import { LangStruct, StructMember } from 'Src/ast/langstruct'
+import { StructMember } from 'Src/ast/langstruct'
 import { ValueType, StructType, rValue } from 'Src/ast/langtype'
 
-import * as prim from 'Src/ast/nodes/primitive'
-import { BlockState } from 'Src/ast/nodes/define-function'
-import { resolveType } from 'Src/ast/nodes/resolve-type'
-import { Expr } from 'Src/ast/nodes/expr'
+import { TypedNode } from './primitive'
+import { Expr } from './expr'
 
-function makeStructMembers(
-	nameResolver: NameResolver,
-	parserMembers: p.StructMember[]
-): StructMember[] {
-	const members = []
-	let offset = 0
-
-	for (const parserMember of parserMembers) {
-		const type = resolveType(nameResolver, parserMember.type)
-		members.push(new StructMember(parserMember.name.value, type, offset))
-		offset += type.size
-	}
-
-	return members
-}
-
-export function makeLangStruct(
-	nameResolver: NameResolver,
-	defineStruct: p.DefineStruct
-): LangStruct {
-	return new LangStruct(
-		defineStruct.name.value,
-		makeStructMembers(nameResolver, defineStruct.members)
-	)
-}
-
-export class NewStruct implements prim.TypedNode {
+export class NewStruct implements TypedNode {
 	constructor(private readonly _core: StructType) {
 		if (_core.langStruct === undefined) {
 			throw 'サイズが決まっていない型はnewstructできない'
@@ -47,17 +16,7 @@ export class NewStruct implements prim.TypedNode {
 	}
 }
 
-export function makeNewStruct(s: BlockState, parserNode: p.NewStruct): NewStruct {
-	const type = resolveType(s.nameResolver, parserNode.typeNode)
-
-	if (!(type instanceof StructType)) {
-		throw '型がstructじゃない'
-	}
-
-	return new NewStruct(type)
-}
-
-export class MemberAccess implements prim.TypedNode {
+export class MemberAccess implements TypedNode {
 	private readonly _member: StructMember
 
 	constructor(private readonly _expr: Expr, memberName: string) {
@@ -89,8 +48,4 @@ export class MemberAccess implements prim.TypedNode {
 	get type(): ValueType {
 		return this._expr.type.withCore(this._member.type)
 	}
-}
-
-export function makeMemberAccess(expr: Expr, parserNode: p.MemberAccess): MemberAccess {
-	return new MemberAccess(expr, parserNode.value.value)
 }

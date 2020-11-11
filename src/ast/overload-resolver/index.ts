@@ -1,5 +1,5 @@
 import * as u from 'Src/utils'
-import { Expr } from 'Src/ast/nodes/expr'
+import { Expr } from 'Src/ast/nodes'
 import { LangFunction } from 'Src/ast/langfunction'
 
 function calcScore(candidate: LangFunction, args: Expr[]): number {

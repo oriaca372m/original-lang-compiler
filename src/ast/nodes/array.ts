@@ -1,13 +1,10 @@
-import * as p from 'Src/parser'
-
 import { TypeCore, ValueType, FixedArrayType, rValue } from 'Src/ast/langtype'
+import { toRValue } from 'Src/ast/maker'
 
-import * as prim from 'Src/ast/nodes/primitive'
-import { BlockState } from 'Src/ast/nodes/define-function'
-import { Expr, makeExprFormExpr } from 'Src/ast/nodes/expr'
-import { toRValue } from 'Src/ast/nodes/misc'
+import { TypedNode } from './primitive'
+import { Expr } from './expr'
 
-export class ArrayLiteral implements prim.TypedNode {
+export class ArrayLiteral implements TypedNode {
 	private readonly _exprs: Expr[]
 	private readonly _elmType: TypeCore
 
@@ -33,8 +30,4 @@ export class ArrayLiteral implements prim.TypedNode {
 		const length = this._exprs.length
 		return new ValueType(new FixedArrayType(this._elmType, length), rValue)
 	}
-}
-
-export function makeArrayLiteral(s: BlockState, pnode: p.ArrayLiteral): ArrayLiteral {
-	return new ArrayLiteral(pnode.value.map((x) => makeExprFormExpr(s, x)))
 }
