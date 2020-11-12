@@ -2,9 +2,11 @@ import * as p from 'Src/parser'
 import * as u from 'Src/utils'
 
 import * as nodes from 'Src/ct-tree/nodes'
+import { interpretedOperandToCtExpr } from './interpreted-operand'
 
-export function makeCtExpr(_pNode: p.Expr): nodes.CtExpr {
-	return new nodes.CtExpr(new nodes.CtImmediateValue(0))
+export function makeCtExpr(pNode: p.Expr): nodes.CtExpr {
+	const interpreted = p.interpretOps(pNode)
+	return interpretedOperandToCtExpr(interpreted)
 }
 
 function stmtToCtExpr(stmt: p.Stmt): nodes.CtExpr {
