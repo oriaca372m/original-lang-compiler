@@ -1,20 +1,3 @@
-def p(msg String) Void {
-	print_string_length(msg, strlen(msg))
-}
-
-def p(num Int) Void {
-	print(num)
-}
-
-def p(ptr *Int) Void {
-	print(*ptr)
-}
-
-def main() Int {
-	let add = def (a Int, b Int) Int {
-		a + b
-	}
-
-	p(add(1, 2))
-	0
+def test(a Int) Int {
+	100
 }
