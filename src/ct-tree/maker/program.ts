@@ -12,5 +12,5 @@ export function makeProgram(pNode: p.Program): nodes.Program {
 		}
 	}
 
-	return new nodes.Program(funcs)
+	return new nodes.Program(funcs, [])
 }

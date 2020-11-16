@@ -34,3 +34,4 @@ export class CtFuncType extends CtType {
 }
 
 export const intCtType = new CtType('__Int')
+export const rtTypeCtType = new CtType('__RtType')

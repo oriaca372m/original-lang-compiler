@@ -1,12 +1,16 @@
 import * as p from 'Src/parser'
 import * as u from 'Src/utils'
 
-import { CtType, intCtType } from 'Src/ct-tree/ct-type'
+import { CtType, intCtType, rtTypeCtType } from 'Src/ct-tree/ct-type'
 
 function resolveCtTypeIdentifier(id: p.TypeIdentifier): CtType {
 	const name = id.value
 	if (name === 'Int') {
 		return intCtType
+	}
+
+	if (name === 'Type') {
+		return rtTypeCtType
 	}
 
 	throw `unknown ct-type! ${name}`

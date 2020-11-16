@@ -1,10 +1,11 @@
 import * as u from 'Src/utils'
 
-import { CtType, intCtType } from 'Src/ct-tree/ct-type'
+import { CtType, intCtType, rtTypeCtType } from 'Src/ct-tree/ct-type'
+import { RtType } from 'Src/ct-tree/rt-type'
 
 import { CtFuncDef } from './ct-func-def'
 
-type CtImmediateValueTypes = number | CtFuncDef
+type CtImmediateValueTypes = number | CtFuncDef | RtType
 
 export class CtImmediateValue {
 	private readonly _ctType: CtType
@@ -13,6 +14,8 @@ export class CtImmediateValue {
 		if (_value instanceof CtFuncDef) {
 			// TODO: とりあえず
 			this._ctType = intCtType
+		} else if (_value instanceof RtType) {
+			this._ctType = rtTypeCtType
 		} else if (typeof _value === 'number') {
 			this._ctType = intCtType
 		} else {

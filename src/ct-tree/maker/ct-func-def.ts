@@ -12,6 +12,11 @@ interface CtFuncDecl {
 }
 
 function readDefFuncDecl(pNode: p.DefFunction): CtFuncDecl {
+	// TODO: 関数名にRTが含まれていたらCtFuncでは無いということにしておく
+	if (pNode.name.value.includes('RT')) {
+		throw 'CtFuncじゃなかった'
+	}
+
 	const params = []
 	for (const param of pNode.params.value) {
 		const ctType = resolveCtType(param.type)

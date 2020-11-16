@@ -1,3 +1,7 @@
-def test(a Int) Int {
-	100
+def testType(a Int) Type {
+	RtInt
+}
+
+def mainRT(a Int) Type {
+	RtInt
 }
