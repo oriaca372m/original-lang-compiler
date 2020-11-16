@@ -4,7 +4,7 @@ import { CtType } from 'Src/ct-tree/ct-type'
 
 import * as nodes from 'Src/ct-tree/nodes'
 import { resolveCtType } from './resolve-ct-type'
-import { makeCtMultipleExpr } from './ct-expr'
+import { makeRtMultipleExpr } from './rt-expr'
 
 interface CtFuncDecl {
 	params: nodes.CtFuncParam[]
@@ -35,10 +35,10 @@ export function makeCtFuncDef(pNode: p.DefFunction): nodes.CtFuncDef | undefined
 		return undefined
 	}
 
-	return new nodes.CtFuncDef(
-		pNode.name.value,
-		decl.params,
-		decl.resultCtType,
-		makeCtMultipleExpr(pNode.body)
-	)
+	const exprs = makeRtMultipleExpr(pNode.body).toCtMultipleExpr()
+	if (exprs === undefined) {
+		throw '実行時の式が混ざっている'
+	}
+
+	return new nodes.CtFuncDef(pNode.name.value, decl.params, decl.resultCtType, exprs)
 }

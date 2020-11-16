@@ -1,7 +1,7 @@
 import * as p from 'Src/parser'
 
 import * as nodes from 'Src/ct-tree/nodes'
-import { makeCtExprFromTypeNode } from './ct-expr'
+import { makeCtExprFromTypeNode } from './misc'
 import { makeRtMultipleExpr } from './rt-expr'
 
 interface RtFuncDecl {

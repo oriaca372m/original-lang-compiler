@@ -3,6 +3,7 @@ import * as p from 'Src/parser'
 
 import * as nodes from 'Src/ct-tree/nodes'
 import { makeRtExpr } from './rt-expr'
+import { ctImmediateValueFromIdentifier } from '../ct-immediate-value'
 
 function termToRtExpr(term: p.Term): nodes.RtExpr | nodes.CtExpr {
 	const v = term.value
@@ -14,7 +15,7 @@ function termToRtExpr(term: p.Term): nodes.RtExpr | nodes.CtExpr {
 	} else if (v instanceof p.Bracket) {
 		return makeRtExpr(v.value)
 	} else if (v instanceof p.Identifier) {
-		u.notImplemented()
+		return new nodes.CtExpr(ctImmediateValueFromIdentifier(v))
 	} else if (v instanceof p.If) {
 		u.notImplemented()
 	} else if (v instanceof p.While) {
