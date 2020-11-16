@@ -2,6 +2,6 @@ def testType(a Int) Type {
 	RtInt
 }
 
-def mainRT(a Int) Type {
-	RtInt
+def mainRT(a RtInt) RtInt {
+	3
 }

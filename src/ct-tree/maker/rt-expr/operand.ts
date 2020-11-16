@@ -8,7 +8,7 @@ function termToRtExpr(term: p.Term): nodes.RtExpr | nodes.CtExpr {
 	const v = term.value
 
 	if (v instanceof p.NumberNode) {
-		return new nodes.CtExpr(new nodes.CtImmediateValue(v))
+		return new nodes.CtExpr(new nodes.CtImmediateValue(v.value))
 	} else if (v instanceof p.StringNode) {
 		u.notImplemented()
 	} else if (v instanceof p.Bracket) {
