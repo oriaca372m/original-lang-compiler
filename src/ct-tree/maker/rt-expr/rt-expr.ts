@@ -20,7 +20,13 @@ function stmtToRtExpr(stmt: p.Stmt): nodes.RtExpr | nodes.CtExpr {
 	}
 }
 
-export function makeRtMultipleExpr(pNode: p.MultipleStmt): nodes.RtMultipleExpr | nodes.CtExpr {
-	const exprs = pNode.value.map((x) => stmtToRtExpr(x))
+export function makeRtMultipleExpr(pNode: p.MultipleStmt): nodes.RtMultipleExpr {
+	const exprs = pNode.value.map((x) => {
+		const expr = stmtToRtExpr(x)
+		if (expr instanceof nodes.CtExpr) {
+			return new nodes.RtDoCtExpr(expr)
+		}
+		return expr
+	})
 	return new nodes.RtMultipleExpr(exprs)
 }

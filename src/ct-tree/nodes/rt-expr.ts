@@ -1,5 +1,6 @@
 import { RtApplyFunc } from './rt-apply-func'
 import { RtToRtValue } from './rt-to-rt-value'
+import { CtExpr } from './ct-expr'
 
 type RtExprType = RtToRtValue | RtApplyFunc
 export class RtExpr {
@@ -10,14 +11,23 @@ export class RtExpr {
 	}
 }
 
+export class RtDoCtExpr {
+	constructor(private readonly _value: CtExpr) {}
+
+	get value(): CtExpr {
+		return this._value
+	}
+}
+
+type RtMultipleExprType = (RtExpr | RtDoCtExpr)[]
 export class RtMultipleExpr {
-	constructor(private readonly _exprs: RtExpr[]) {
+	constructor(private readonly _exprs: RtMultipleExprType) {
 		if (_exprs.length === 0) {
 			throw '空のRtMultipleExprはだめ'
 		}
 	}
 
-	get exprs(): RtExpr[] {
+	get exprs(): RtMultipleExprType {
 		return this._exprs
 	}
 }
