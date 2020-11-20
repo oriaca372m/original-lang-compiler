@@ -16,7 +16,7 @@ function termToRtExpr(bs: BlockState, term: p.Term): nodes.RtExpr | nodes.CtExpr
 	} else if (v instanceof p.Bracket) {
 		return makeRtExpr(bs, v.value)
 	} else if (v instanceof p.Identifier) {
-		return new nodes.CtExpr(ctImmediateValueFromIdentifier(v))
+		return new nodes.CtExpr(ctImmediateValueFromIdentifier(bs.nameResolver, v))
 	} else if (v instanceof p.If) {
 		u.notImplemented()
 	} else if (v instanceof p.While) {

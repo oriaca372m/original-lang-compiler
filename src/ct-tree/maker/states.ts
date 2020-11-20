@@ -1,6 +1,6 @@
 import { CtFunc } from 'Src/ct-tree/ct-func'
 
-import { NameResolver } from './name-resolver'
+import { Name, NameResolver } from './name-resolver'
 
 export class BlockState {
 	constructor(
@@ -54,6 +54,7 @@ export class ProgramState {
 
 	constructor() {
 		const rootNameResolver = new NameResolver()
+		rootNameResolver.set(new Name('RtInt'))
 		this._nameResolver = rootNameResolver.createChild()
 	}
 
