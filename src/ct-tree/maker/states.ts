@@ -30,7 +30,7 @@ export class BlockState {
 export class FuncDefState {
 	private readonly _nameResolver: NameResolver
 
-	constructor(private readonly _ps: ProgramState, private readonly _ctFunc: CtFunc) {
+	constructor(private readonly _ps: ProgramState, private readonly _ctFunc?: CtFunc) {
 		this._nameResolver = _ps.nameResolver.createChild()
 	}
 
@@ -38,7 +38,7 @@ export class FuncDefState {
 		return this._ps
 	}
 
-	get ctFunc(): CtFunc {
+	get ctFunc(): CtFunc | undefined {
 		return this._ctFunc
 	}
 
@@ -66,7 +66,7 @@ export class ProgramState {
 		return this._nameResolver
 	}
 
-	createFuncDefState(ctFunc: CtFunc): FuncDefState {
+	createFuncDefState(ctFunc?: CtFunc): FuncDefState {
 		return new FuncDefState(this, ctFunc)
 	}
 }

@@ -18,7 +18,7 @@ export class CtFuncType extends CtType {
 	constructor(private readonly _argTypes: CtType[], private readonly _resultType: CtType) {
 		super(
 			(() => {
-				const typeNames = [this._resultType.name, ...this._argTypes.map((x) => x.name)]
+				const typeNames = [_resultType.name, ..._argTypes.map((x) => x.name)]
 				return `__FunctionType<${typeNames.join(', ')}>`
 			})()
 		)

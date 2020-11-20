@@ -2,6 +2,14 @@ def testType(a Int) Type {
 	RtInt
 }
 
+def add(a Int, b Int) Int {
+	1
+}
+
+def testCt() Int {
+	add(1, 1)
+}
+
 def mainRT(a RtInt) RtInt {
 	3
 }
