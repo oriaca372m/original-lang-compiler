@@ -3,6 +3,7 @@ import * as p from 'Src/parser'
 import * as nodes from 'Src/ct-tree/nodes'
 import { makeCtExprFromTypeNode } from './misc'
 import { makeRtMultipleExpr } from './rt-expr'
+import { FuncDefState } from './states'
 
 interface RtFuncDecl {
 	params: nodes.RtFuncParam[]
@@ -19,13 +20,13 @@ function readDefFuncDecl(pNode: p.DefFunction): RtFuncDecl {
 	return { params, resultType }
 }
 
-export function makeRtFuncDef(pNode: p.DefFunction): nodes.RtFuncDef {
+export function makeRtFuncDef(fds: FuncDefState, pNode: p.DefFunction): nodes.RtFuncDef {
 	const decl = readDefFuncDecl(pNode)
 
 	return new nodes.RtFuncDef(
 		pNode.name.value,
 		decl.params,
 		decl.resultType,
-		makeRtMultipleExpr(pNode.body)
+		makeRtMultipleExpr(fds.createBlockState(), pNode.body)
 	)
 }

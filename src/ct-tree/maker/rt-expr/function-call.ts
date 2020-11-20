@@ -4,13 +4,15 @@ import * as nodes from 'Src/ct-tree/nodes'
 
 import { makeRtExpr } from './rt-expr'
 import { interpretedOperandToRtExpr } from './interpreted-operand'
+import { BlockState } from '../states'
 
 export function functionCallToExpr(
+	bs: BlockState,
 	funcNode: p.InterpretedOperand,
 	argsNode: p.FunctionCallArgument
 ): nodes.RtExpr | nodes.CtExpr {
 	const funcExpr = (() => {
-		const expr = interpretedOperandToRtExpr(funcNode)
+		const expr = interpretedOperandToRtExpr(bs, funcNode)
 		if (expr instanceof nodes.CtExpr) {
 			return new nodes.RtExpr(new nodes.RtToRtValue(expr))
 		}
@@ -18,7 +20,7 @@ export function functionCallToExpr(
 	})()
 
 	const args = argsNode.args.value.map((x) => {
-		const expr = makeRtExpr(x)
+		const expr = makeRtExpr(bs, x)
 		if (expr instanceof nodes.CtExpr) {
 			return new nodes.RtExpr(new nodes.RtToRtValue(expr))
 		}

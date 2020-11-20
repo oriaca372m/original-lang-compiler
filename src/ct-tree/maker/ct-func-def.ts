@@ -5,6 +5,7 @@ import { CtType } from 'Src/ct-tree/ct-type'
 import * as nodes from 'Src/ct-tree/nodes'
 import { resolveCtType } from './resolve-ct-type'
 import { makeRtMultipleExpr } from './rt-expr'
+import { FuncDefState } from './states'
 
 interface CtFuncDecl {
 	params: nodes.CtFuncParam[]
@@ -27,7 +28,10 @@ function readDefFuncDecl(pNode: p.DefFunction): CtFuncDecl {
 	return { params, resultCtType }
 }
 
-export function makeCtFuncDef(pNode: p.DefFunction): nodes.CtFuncDef | undefined {
+export function makeCtFuncDef(
+	fds: FuncDefState,
+	pNode: p.DefFunction
+): nodes.CtFuncDef | undefined {
 	let decl
 	try {
 		decl = readDefFuncDecl(pNode)
@@ -35,7 +39,7 @@ export function makeCtFuncDef(pNode: p.DefFunction): nodes.CtFuncDef | undefined
 		return undefined
 	}
 
-	const exprs = makeRtMultipleExpr(pNode.body).toCtMultipleExpr()
+	const exprs = makeRtMultipleExpr(fds.createBlockState(), pNode.body).toCtMultipleExpr()
 	if (exprs === undefined) {
 		throw '実行時の式が混ざっている'
 	}

@@ -4,8 +4,9 @@ import * as p from 'Src/parser'
 import * as nodes from 'Src/ct-tree/nodes'
 import { makeRtExpr } from './rt-expr'
 import { ctImmediateValueFromIdentifier } from '../ct-immediate-value'
+import { BlockState } from '../states'
 
-function termToRtExpr(term: p.Term): nodes.RtExpr | nodes.CtExpr {
+function termToRtExpr(bs: BlockState, term: p.Term): nodes.RtExpr | nodes.CtExpr {
 	const v = term.value
 
 	if (v instanceof p.NumberNode) {
@@ -13,7 +14,7 @@ function termToRtExpr(term: p.Term): nodes.RtExpr | nodes.CtExpr {
 	} else if (v instanceof p.StringNode) {
 		u.notImplemented()
 	} else if (v instanceof p.Bracket) {
-		return makeRtExpr(v.value)
+		return makeRtExpr(bs, v.value)
 	} else if (v instanceof p.Identifier) {
 		return new nodes.CtExpr(ctImmediateValueFromIdentifier(v))
 	} else if (v instanceof p.If) {
@@ -35,10 +36,10 @@ function termToRtExpr(term: p.Term): nodes.RtExpr | nodes.CtExpr {
 	}
 }
 
-export function operandToRtExpr(operand: p.Operand): nodes.RtExpr | nodes.CtExpr {
+export function operandToRtExpr(bs: BlockState, operand: p.Operand): nodes.RtExpr | nodes.CtExpr {
 	const v = operand.value
 	if (v instanceof p.Term) {
-		return termToRtExpr(v)
+		return termToRtExpr(bs, v)
 	} else {
 		u.unreachable(v)
 	}
