@@ -1,6 +1,8 @@
 import { CtFunc } from 'Src/ct-tree/ct-func'
 
-import { Name, NameResolver } from './name-resolver'
+import { RtType } from 'Src/ct-tree/rt-type'
+import * as nodes from 'Src/ct-tree/nodes'
+import { Name, NameResolver, NameValueCtImm } from './name-resolver'
 
 export class BlockState {
 	constructor(
@@ -54,7 +56,9 @@ export class ProgramState {
 
 	constructor() {
 		const rootNameResolver = new NameResolver()
-		rootNameResolver.set(new Name('RtInt'))
+		rootNameResolver.set(
+			new Name('RtInt', new NameValueCtImm(new nodes.CtImmediateValue(new RtType())))
+		)
 		this._nameResolver = rootNameResolver.createChild()
 	}
 

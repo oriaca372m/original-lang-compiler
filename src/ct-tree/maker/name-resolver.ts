@@ -1,10 +1,36 @@
+import * as nodes from 'Src/ct-tree/nodes'
+
 export class Name {
-	constructor(private readonly _nameString: string) {}
+	private readonly _value: NameValue
+	constructor(private readonly _nameString: string, value?: NameValue) {
+		if (value === undefined) {
+			this._value = new NameValueNil()
+		} else {
+			this._value = value
+		}
+	}
 
 	get nameString(): string {
 		return this._nameString
 	}
+
+	get value(): NameValue {
+		return this._value
+	}
 }
+
+export abstract class NameValue {}
+
+export class NameValueCtImm {
+	constructor(private readonly _ctImm: nodes.CtImmediateValue) {}
+
+	get ctImm(): nodes.CtImmediateValue {
+		return this._ctImm
+	}
+}
+
+// TODO: とりあえず
+export class NameValueNil {}
 
 export class NameResolver {
 	private readonly _table = new Set<Name>()
