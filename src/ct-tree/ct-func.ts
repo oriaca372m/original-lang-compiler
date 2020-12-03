@@ -1,6 +1,9 @@
 import { CtType, CtFuncType } from './ct-type'
+import { CtFuncDef } from 'Src/ct-tree/nodes'
 
 export class CtFunc {
+	private _ctFuncDef: CtFuncDef | undefined
+
 	constructor(
 		private readonly _name: string,
 		private readonly _argTypes: CtType[],
@@ -21,5 +24,13 @@ export class CtFunc {
 
 	toCtFuncType(): CtFuncType {
 		return new CtFuncType(this.argTypes, this.resultType)
+	}
+
+	setFuncDef(ctFuncDef: CtFuncDef): void {
+		this._ctFuncDef = ctFuncDef
+	}
+
+	get funcDef(): CtFuncDef | undefined {
+		return this._ctFuncDef
 	}
 }
