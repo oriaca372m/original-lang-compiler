@@ -1,12 +1,12 @@
-def testType(a Int) Type {
+def testType(a CtInt) CtType {
 	RtInt
 }
 
-def add(a Int, b Int) Int {
+def add(a CtInt, b CtInt) CtInt {
 	1
 }
 
-def testCt() Int {
+def testCt() CtInt {
 	add(1, 1)
 }
 

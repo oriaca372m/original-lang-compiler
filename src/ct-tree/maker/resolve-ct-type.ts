@@ -5,11 +5,11 @@ import { CtType, intCtType, rtTypeCtType } from 'Src/ct-tree/ct-type'
 
 function resolveCtTypeIdentifier(id: p.TypeIdentifier): CtType {
 	const name = id.value
-	if (name === 'Int') {
+	if (name === 'CtInt') {
 		return intCtType
 	}
 
-	if (name === 'Type') {
+	if (name === 'CtType') {
 		return rtTypeCtType
 	}
 
