@@ -7,7 +7,7 @@ def add(a CtInt, b CtInt) CtInt {
 }
 
 def testCt() CtInt {
-	add(1, 1)
+	add(10, 20)
 }
 
 def mainRT(a RtInt) RtInt {
