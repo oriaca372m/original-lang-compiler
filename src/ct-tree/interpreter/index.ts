@@ -39,5 +39,8 @@ function interpretApplyFunc(applyFunc: nodes.CtApplyFunc): nodes.CtImmediateValu
 		return new nodes.CtImmediateValue(v1 + v2)
 	}
 
-	u.notImplemented()
+	return interpretFunc(
+		func,
+		applyFunc.args.map((x) => interpretExpr(x))
+	)
 }
