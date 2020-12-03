@@ -1,6 +1,6 @@
 import * as p from 'Src/parser'
 // import { makeProgram } from 'Src/ast'
-import { makeProgram as makeCtProgram } from 'Src/ct-tree'
+import { makeProgram as makeCtProgram, interpret } from 'Src/ct-tree'
 // import { compileProgram } from 'Src/compiler/compiler'
 // import { Asm } from 'Src/assembler'
 import * as fs from 'fs'
@@ -29,6 +29,9 @@ function main() {
 
 	const ctTree = makeCtProgram(program)
 	console.log(util.inspect(ctTree, { depth: null, colors: true }))
+
+	const interpreted = interpret(ctTree)
+	console.log(util.inspect(interpreted, { depth: null, colors: true }))
 
 	// const ast = makeProgram(program)
 	// console.log(util.inspect(ast, { depth: null, colors: true }))

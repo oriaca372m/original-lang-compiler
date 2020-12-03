@@ -10,31 +10,29 @@ import { Name, NameValueCtImm } from './name-resolver'
 export function makeProgram(pNode: p.Program): nodes.Program {
 	const ps = new ProgramState()
 	const ctFuncs = []
-	const rtFuncs = []
+	const ctFuncDefs = []
+	const rtFuncDefs = []
 
 	for (const defFunc of pNode.defFunctions.value) {
 		const funcDef = makeCtFuncDef(ps.createFuncDefState(), defFunc)
 		if (funcDef !== undefined) {
-			ps.nameResolver.set(
-				new Name(
-					funcDef.name,
-					new NameValueCtImm(
-						new nodes.CtImmediateValue(
-							new CtFunc(
-								funcDef.name,
-								funcDef.params.map((x) => x.ctType),
-								funcDef.resultType
-							)
-						)
-					)
-				)
+			const ctFunc = new CtFunc(
+				funcDef.name,
+				funcDef.params.map((x) => x.ctType),
+				funcDef.resultType
 			)
-			ctFuncs.push(funcDef)
+			ctFunc.setFuncDef(funcDef)
+			ctFuncs.push(ctFunc)
+
+			ps.nameResolver.set(
+				new Name(funcDef.name, new NameValueCtImm(new nodes.CtImmediateValue(ctFunc)))
+			)
+			ctFuncDefs.push(funcDef)
 			continue
 		}
 
-		rtFuncs.push(makeRtFuncDef(ps.createFuncDefState(), defFunc))
+		rtFuncDefs.push(makeRtFuncDef(ps.createFuncDefState(), defFunc))
 	}
 
-	return new nodes.Program(ctFuncs, rtFuncs)
+	return new nodes.Program(ctFuncDefs, rtFuncDefs, ctFuncs)
 }
